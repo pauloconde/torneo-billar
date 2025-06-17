@@ -49,10 +49,10 @@ export default function HomePage() {
           <div className='block md:hidden text-center'>
             <div className='mb-4'>
               <Image
-                src='/logo.png'
+                src='/logo_clear.png'
                 alt='Logo del torneo'
-                width={80} // ancho en píxeles
-                height={80} // alto en píxeles
+                width={100} // ancho en píxeles
+                height={100} // alto en píxeles
                 className='mx-auto md:mx-0'
                 priority
               />
@@ -66,10 +66,10 @@ export default function HomePage() {
           {/* Layout desktop - Logo a la izquierda, título a la derecha */}
           <div className='hidden md:flex md:items-center md:justify-center md:space-x-6'>
             <Image
-              src='/logo.png'
+              src='/logo_clear.png'
               alt='Logo del torneo'
-              width={120} // ancho en píxeles
-              height={120} // alto en píxeles
+              width={150} // ancho en píxeles
+              height={150} // alto en píxeles
               className='mx-auto md:mx-0'
               priority
             />
