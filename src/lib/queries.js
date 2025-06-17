@@ -85,7 +85,7 @@ export async function obtenerPartidasJugador(cedula) {
       jugador2_data:participantes!partidas_jugador2_fkey(cedula, nombre)
     `)
     .or(`jugador1.eq.${cedula},jugador2.eq.${cedula}`)
-    .order('fecha', { ascending: false })
+    .order('id', { ascending: false })
 
   if (error) {
     console.error('Error obteniendo partidas del jugador:', error)

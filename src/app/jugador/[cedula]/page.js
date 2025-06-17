@@ -301,7 +301,7 @@ export default function JugadorPage() {
                             }`}
                           ></div>
                           <span className='text-xs text-muted-foreground uppercase font-medium'>
-                            Jugó con bola {resultado.miBola}
+                            con Bola {resultado.miBola}
                           </span>
                         </div>
 
@@ -346,9 +346,10 @@ export default function JugadorPage() {
                       <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center space-x-2'>
                           <div className='flex flex-col'>
+                          <p className='text-sm'>vs.</p>
                             <div className='flex items-center space-x-1'>
-                              <span className='font-semibold text-foreground text-sm'>
-                                vs {formatearNombre(rival.nombre).apellidos}
+                              <span className='font-semibold text-foreground text-md'>
+                                {formatearNombre(rival.nombre).apellidos}
                               </span>
                               <div
                                 className={`w-3 h-3 rounded-full border ${
@@ -357,9 +358,10 @@ export default function JugadorPage() {
                                     : 'bg-yellow-400 border-yellow-600'
                                 }`}
                               ></div>
+                              
                             </div>
                             {formatearNombre(rival.nombre).nombres && (
-                              <span className='text-sm text-foreground ml-5'>
+                              <span className='text-md text-foreground -mt-2'>
                                 {formatearNombre(rival.nombre).nombres}
                               </span>
                             )}
@@ -375,13 +377,18 @@ export default function JugadorPage() {
 
                       {/* Series */}
                       <div className='flex justify-end items-center mb-3'>
-                        <span className='text-sm text-muted-foreground'>
-                          Serie: 
-                        </span>
-                        <div className='text-sm font-medium text-foreground'>
-                          &nbsp;{resultado.miSerie} vs {resultado.rivalSerie}
-                        </div>
-                        
+                          <div className='text-sm text-muted-foreground'>
+                            Serie:&nbsp;
+                          </div>
+                          <Badge
+                            variant='outline'
+                            className='border-border text-md'
+                          >
+                            <div className='font-medium text-foreground'>
+                              {resultado.miSerie} vs{' '}
+                              {resultado.rivalSerie}
+                            </div>
+                          </Badge>
                       </div>
 
                       {/* Footer con fecha, hora y partida */}
@@ -407,7 +414,9 @@ export default function JugadorPage() {
                               )}
                             </span>
                           </div>
-                          <div className='text-xs text-muted-foreground pt-2'>Partida #{partida.id}</div>
+                          <div className='text-xs text-white pt-1 border-t-2 mt-1'>
+                            Partida #{partida.id}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -465,7 +474,7 @@ export default function JugadorPage() {
                                 }`}
                               ></div>
                               <span className='text-xs text-muted-foreground uppercase'>
-                                Jugó con bola {resultado.miBola}
+                                con Bola {resultado.miBola}
                               </span>
                             </div>
                             <div className='font-semibold text-foreground'>
