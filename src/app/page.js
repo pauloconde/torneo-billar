@@ -28,11 +28,11 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-background p-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Cargando ranking...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Cargando ranking...</p>
           </div>
         </div>
       </div>
@@ -40,14 +40,14 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Ranking Inicial Billar 3 Bandas - Barinas 2025
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            🎱 Torneo de Billar 3 Bandas
           </h1>
-          <p className="text-gray-600">Ranking en tiempo real</p>
+          <p className="text-muted-foreground">Ranking en tiempo real</p>
         </div>
 
         {/* Ranking */}
@@ -58,54 +58,58 @@ export default function HomePage() {
               href={`/jugador/${jugador.cedula}`}
               className="block"
             >
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer border-border">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                     {/* Posición y nombre */}
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
-                        {index === 0 && <Trophy className="w-6 h-6 text-yellow-500" />}
-                        {index === 1 && <Trophy className="w-6 h-6 text-gray-400" />}
-                        {index === 2 && <Trophy className="w-6 h-6 text-amber-600" />}
-                        {index > 2 && <span className="font-bold text-gray-600">#{index + 1}</span>}
+                      <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-muted">
+                        {index === 0 && <Trophy className="w-5 h-5 md:w-6 md:h-6 text-yellow-500" />}
+                        {index === 1 && <Trophy className="w-5 h-5 md:w-6 md:h-6 text-gray-400" />}
+                        {index === 2 && <Trophy className="w-5 h-5 md:w-6 md:h-6 text-amber-600" />}
+                        {index > 2 && <span className="font-bold text-muted-foreground text-sm md:text-base">#{index + 1}</span>}
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-base md:text-lg font-semibold text-foreground">
                           {jugador.nombre}
                         </h3>
-                        <p className="text-sm text-gray-500">
-                          {jugador.partidas_jugadas} {jugador.partidas_jugadas === 1 ? ' partida jugada' : ' partidas jugadas'}
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          {jugador.partidas_jugadas} {jugador.partidas_jugadas === 1 ? 'partida jugada' : 'partidas jugadas'}
                         </p>
                       </div>
                     </div>
 
                     {/* Estadísticas */}
-                    <div className="flex items-center space-x-6">
-                      <div className="text-center">
-                        <div className="flex items-center space-x-1">
-                          <Target className="w-4 h-4 text-blue-500" />
-                          <span className="text-2xl font-bold text-blue-600">
-                            {jugador.promedio.toFixed(3)}
-                          </span>
+                    <div className="flex items-center justify-between md:justify-end space-x-4 md:space-x-6">
+                      {/* Promedio y Serie en columna para móvil */}
+                      <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-6">
+                        <div className="text-center">
+                          <div className="flex items-center justify-center space-x-1">
+                            <Target className="w-4 h-4 text-blue-500" />
+                            <span className="text-xl md:text-2xl font-bold text-blue-400">
+                              {jugador.promedio.toFixed(3)}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Promedio</p>
                         </div>
-                        <p className="text-xs text-gray-500">Promedio</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <div className="flex items-center space-x-1">
-                          <BarChart3 className="w-4 h-4 text-green-500" />
-                          <span className="text-lg font-semibold text-green-600">
-                            {jugador.mejor_serie}
-                          </span>
+                        
+                        <div className="text-center">
+                          <div className="flex items-center justify-center space-x-1">
+                            <BarChart3 className="w-4 h-4 text-green-500" />
+                            <span className="text-lg md:text-xl font-semibold text-green-400">
+                              {jugador.mejor_serie}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">Mejor Serie</p>
                         </div>
-                        <p className="text-xs text-gray-500">Mejor Serie</p>
                       </div>
 
+                      {/* Car/Ent separado */}
                       <div className="text-center">
-                        <Badge variant="outline">
+                        <Badge variant="outline" className="border-border text-xs">
                           {jugador.total_carambolas}/{jugador.total_entradas}
                         </Badge>
-                        <p className="text-xs text-gray-500 mt-1">Car/Ent</p>
+                        <p className="text-xs text-muted-foreground mt-1">Car/Ent</p>
                       </div>
                     </div>
                   </div>
@@ -117,7 +121,7 @@ export default function HomePage() {
 
         {ranking.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No hay datos disponibles</p>
+            <p className="text-muted-foreground">No hay datos disponibles</p>
           </div>
         )}
       </div>

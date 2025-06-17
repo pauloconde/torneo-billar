@@ -6,15 +6,7 @@ import { obtenerPartidasJugador, obtenerRanking } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Trophy,
-  Target,
-  BarChart3,
-  Users,
-} from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Trophy, Target, BarChart3, Users } from 'lucide-react';
 import Link from 'next/link';
 
 export default function JugadorPage() {
@@ -57,11 +49,11 @@ export default function JugadorPage() {
 
   if (loading) {
     return (
-      <div className='min-h-screen bg-gray-50 p-4'>
+      <div className='min-h-screen bg-background p-4'>
         <div className='max-w-4xl mx-auto'>
           <div className='text-center py-8'>
-            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
-            <p className='mt-4 text-gray-600'>Cargando datos del jugador...</p>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto'></div>
+            <p className='mt-4 text-muted-foreground'>Cargando datos del jugador...</p>
           </div>
         </div>
       </div>
@@ -70,10 +62,10 @@ export default function JugadorPage() {
 
   if (!jugador) {
     return (
-      <div className='min-h-screen bg-gray-50 p-4'>
+      <div className='min-h-screen bg-background p-4'>
         <div className='max-w-4xl mx-auto'>
           <div className='text-center py-8'>
-            <p className='text-red-600'>Jugador no encontrado</p>
+            <p className='text-destructive'>Jugador no encontrado</p>
             <Button onClick={() => router.push('/')} className='mt-4'>
               <ArrowLeft className='w-4 h-4 mr-2' />
               Volver al ranking
@@ -172,7 +164,7 @@ export default function JugadorPage() {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 p-4'>
+    <div className='min-h-screen bg-background p-4'>
       <div className='max-w-4xl mx-auto'>
         {/* Header con botón de regreso */}
         <div className='mb-6'>
@@ -187,72 +179,72 @@ export default function JugadorPage() {
         </div>
 
         {/* Estadísticas del jugador */}
-        <Card className='mb-6'>
+        <Card className='mb-6 border-border'>
           <CardHeader>
-            <CardTitle className='flex items-center space-x-2'>
+            <CardTitle className='flex items-center space-x-2 text-foreground'>
               <Users className='w-6 h-6' />
               <span>{jugador.nombre}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
-              <div className='text-center p-4 bg-blue-50 rounded-lg'>
+              <div className='col-span-2 md:col-span-1 text-center p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Target className='w-5 h-5 text-blue-500' />
-                  <span className='text-2xl font-bold text-blue-600'>
+                  <span className='text-2xl font-bold text-blue-400'>
                     {jugador.promedio.toFixed(3)}
                   </span>
                 </div>
-                <p className='text-sm text-gray-600'>Promedio</p>
+                <p className='text-sm text-muted-foreground'>Promedio</p>
               </div>
 
-              <div className='text-center p-4 bg-green-50 rounded-lg'>
+              <div className='text-center p-4 bg-green-500/10 border border-green-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <BarChart3 className='w-5 h-5 text-green-500' />
-                  <span className='text-2xl font-bold text-green-600'>
+                  <span className='text-2xl font-bold text-green-400'>
                     {jugador.mejor_serie}
                   </span>
                 </div>
-                <p className='text-sm text-gray-600'>Mejor Serie</p>
+                <p className='text-sm text-muted-foreground'>Mejor Serie</p>
               </div>
 
-              <div className='text-center p-4 bg-purple-50 rounded-lg'>
+              <div className='text-center p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Trophy className='w-5 h-5 text-purple-500' />
-                  <span className='text-2xl font-bold text-purple-600'>
+                  <span className='text-2xl font-bold text-purple-400'>
                     {jugador.total_carambolas}
                   </span>
                 </div>
-                <p className='text-sm text-gray-600'>Total Carambolas</p>
+                <p className='text-sm text-muted-foreground'>Total Carambolas</p>
               </div>
 
-              <div className='text-center p-4 bg-orange-50 rounded-lg'>
+              <div className='text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Users className='w-5 h-5 text-orange-500' />
-                  <span className='text-2xl font-bold text-orange-600'>
+                  <span className='text-2xl font-bold text-orange-400'>
                     {jugador.partidas_jugadas}
                   </span>
                 </div>
-                <p className='text-sm text-gray-600'>Partidas</p>
+                <p className='text-sm text-muted-foreground'>Partidas</p>
               </div>
 
-              <div className='text-center p-4 bg-yellow-50 rounded-lg'>
+              <div className='text-center p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Users className='w-5 h-5 text-yellow-500' />
-                  <span className='text-2xl font-bold text-yellow-600'>
+                  <span className='text-2xl font-bold text-yellow-400'>
                     {jugador.total_entradas}
                   </span>
                 </div>
-                <p className='text-sm text-gray-600'>Entradas</p>
+                <p className='text-sm text-muted-foreground'>Total Entradas</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Lista de partidas */}
-        <Card>
+        <Card className='border-border'>
           <CardHeader>
-            <CardTitle>Historial de Partidas</CardTitle>
+            <CardTitle className='text-foreground'>Historial de Partidas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className='space-y-4'>
@@ -266,102 +258,92 @@ export default function JugadorPage() {
                     href={`/partida/${partida.id}`}
                     className='block'
                   >
-                    <div className='border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer'>
-                      <div className='flex items-center space-x-4'>
-                        <div className='flex items-center space-x-2'>
-                        {/* Badge con función helper */}
-                        {(() => {
-                            const getBadgeProps = () => {
-                              if (resultado.empate) {
+                    <div className='border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors cursor-pointer'>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center space-x-4'>
+                          <div className='flex items-center space-x-2'>
+                            {/* Badge con función helper */}
+                            {(() => {
+                              const getBadgeProps = () => {
+                                if (resultado.empate) {
+                                  return {
+                                    variant: "outline",
+                                    className: "border-muted-foreground text-muted-foreground",
+                                    text: "Empate"
+                                  }
+                                }
+                                if (resultado.gane) {
+                                  return {
+                                    variant: "default",
+                                    className: "bg-green-500 hover:bg-green-600",
+                                    text: "Victoria"
+                                  }
+                                }
                                 return {
-                                  variant: "outline",
-                                  className: "border-gray-400 text-gray-600",
-                                  text: "Empate"
+                                  variant: "secondary",
+                                  className: "bg-red-500 hover:bg-red-600 text-white",
+                                  text: "Derrota"
                                 }
                               }
-                              if (resultado.gane) {
-                                return {
-                                  variant: "default",
-                                  className: "bg-green-500",
-                                  text: "Victoria"
-                                }
-                              }
-                              return {
-                                variant: "secondary",
-                                className: "bg-red-500",
-                                text: "Derrota"
-                              }
-                            }
-                            
-                            const badgeProps = getBadgeProps()
-                            return (
-                              <Badge variant={badgeProps.variant} className={badgeProps.className}>
-                                {badgeProps.text}
-                              </Badge>
-                            )
-                          })()}
-
-                          
-                        </div>
-
-                        <div>
-                          {/* Indicador de bola */}
-                          <div className='flex items-center space-x-1'>
-                            <div
-                              className={`w-4 h-4 rounded-full border-2 ${
-                                resultado.miBola === 'blanca'
-                                  ? 'bg-white border-gray-400'
-                                  : 'bg-yellow-400 border-yellow-600'
-                              }`}
-                              title={`Jugó con bola ${resultado.miBola}`}
-                            ></div>
-                            <span className='text-xs text-gray-600 uppercase'>
-                              Jugó con bola {resultado.miBola}
-                            </span>
+                              
+                              const badgeProps = getBadgeProps()
+                              return (
+                                <Badge variant={badgeProps.variant} className={badgeProps.className}>
+                                  {badgeProps.text}
+                                </Badge>
+                              )
+                            })()}
                           </div>
-                          <div className='font-semibold'>vs {rival.nombre}
-                          <div
-                              className={`inline-block w-3 h-3 rounded-full border ml-1 ${
-                                resultado.rivalBola === 'blanca'
-                                  ? 'bg-white border-gray-400'
-                                  : 'bg-yellow-400 border-yellow-600'
-                              }`}
-                              title={`${rival.nombre} jugó con bola ${resultado.rivalBola}`}
-                            ></div>
-                          </div>
-                          <div className='flex items-center space-x-4 text-sm text-gray-600'>
-                            <span className='flex items-center'>
-                              <Calendar className='w-4 h-4 mr-1' />
-                              {formatearFecha(partida.fecha)}
-                            </span>
-                            <span className='flex items-center'>
-                              <Clock className='w-4 h-4 mr-1' />
-                              {formatearHora(partida.hora_inicio)} ({calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})
-                            </span>
+
+                          <div>
+                            {/* Indicador de bola */}
+                            <div className='flex items-center space-x-1 mb-1'>
+                              <div
+                                className={`w-4 h-4 rounded-full border-2 ${
+                                  resultado.miBola === 'blanca'
+                                    ? 'bg-white border-gray-400'
+                                    : 'bg-yellow-400 border-yellow-600'
+                                }`}
+                                title={`Jugó con bola ${resultado.miBola}`}
+                              ></div>
+                              <span className='text-xs text-muted-foreground uppercase'>
+                                Jugó con bola {resultado.miBola}
+                              </span>
+                            </div>
+                            <div className='font-semibold text-foreground'>
+                              vs {rival.nombre}
+                              <div
+                                className={`inline-block w-3 h-3 rounded-full border ml-1 ${
+                                  resultado.rivalBola === 'blanca'
+                                    ? 'bg-white border-gray-400'
+                                    : 'bg-yellow-400 border-yellow-600'
+                                }`}
+                                title={`${rival.nombre} jugó con bola ${resultado.rivalBola}`}
+                              ></div>
+                            </div>
+                            <div className='flex items-center space-x-4 text-sm text-muted-foreground'>
+                              <span className='flex items-center'>
+                                <Calendar className='w-4 h-4 mr-1' />
+                                {formatearFecha(partida.fecha)}
+                              </span>
+                              <span className='flex items-center'>
+                                <Clock className='w-4 h-4 mr-1' />
+                                {formatearHora(partida.hora_inicio)} ({calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className='text-right'>
-                        <div className='text-lg font-bold'>
-                          {resultado.misCarambolas} -{' '}
-                          {resultado.rivalCarambolas}
-                        </div>
-                        <div className='text-sm text-gray-600'>
-                          Mayor Serie: {resultado.miSerie} vs {resultado.rivalSerie}
-                        </div>
-                        <div className='text-xs text-gray-500 flex items-center justify-end space-x-2'>
-                          <span>Partida #{partida.id}</span>
-                          <div className='flex items-center space-x-1'>
-                            <span>Rival:</span>
-                            <div
-                              className={`w-3 h-3 rounded-full border ${
-                                resultado.rivalBola === 'blanca'
-                                  ? 'bg-white border-gray-400'
-                                  : 'bg-yellow-400 border-yellow-600'
-                              }`}
-                              title={`${rival.nombre} jugó con bola ${resultado.rivalBola}`}
-                            ></div>
+                        <div className='text-right'>
+                          <div className='text-lg font-bold text-foreground'>
+                            {resultado.misCarambolas} -{' '}
+                            {resultado.rivalCarambolas}
+                          </div>
+                          <div className='text-sm text-muted-foreground'>
+                            Mayor Serie: {resultado.miSerie} vs {resultado.rivalSerie}
+                          </div>
+                          <div className='text-xs text-muted-foreground'>
+                            Partida #{partida.id}
                           </div>
                         </div>
                       </div>
@@ -373,7 +355,7 @@ export default function JugadorPage() {
 
             {partidas.length === 0 && (
               <div className='text-center py-8'>
-                <p className='text-gray-500'>No hay partidas registradas</p>
+                <p className='text-muted-foreground'>No hay partidas registradas</p>
               </div>
             )}
           </CardContent>

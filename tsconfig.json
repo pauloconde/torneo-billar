@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     },
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/lib/supabase.js", "src/lib/queries.js", "src/app/page.oldtsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/lib/supabase.js", "src/lib/queries.js", "src/app/page.oldtsx", "src/app/layout.js"],
   "exclude": ["node_modules"]
 }
