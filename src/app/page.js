@@ -74,7 +74,7 @@ export default function HomePage() {
                           {jugador.nombre}
                         </h3>
                         <p className="text-sm text-gray-500">
-                          {jugador.partidas_jugadas} partidas jugadas
+                          {jugador.partidas_jugadas} {jugador.partidas_jugadas === 1 ? ' partida jugada' : ' partidas jugadas'}
                         </p>
                       </div>
                     </div>

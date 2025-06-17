@@ -93,9 +93,46 @@ export default function JugadorPage() {
   };
 
   const formatearHora = (hora) => {
-    return hora ? hora.substring(0, 5) : '';
-  };
+    if (!hora) return ''
+    
+    // Convertir hora en formato HH:MM a formato 12 horas
+    const [horas, minutos] = hora.split(':')
+    const horaNum = parseInt(horas)
+    const ampm = horaNum >= 12 ? 'PM' : 'AM'
+    const hora12 = horaNum % 12 || 12 // 0 se convierte en 12
+    
+    return `${hora12}:${minutos} ${ampm}`
+  }
 
+  const calcularDuracionPartida = (horaInicio, horaFin) => {
+    if (!horaInicio || !horaFin) return null
+    
+    // Convertir horas a minutos desde medianoche
+    const convertirAMinutos = (hora) => {
+      const [horas, minutos] = hora.split(':').map(Number)
+      return horas * 60 + minutos
+    }
+    
+    const minutosInicio = convertirAMinutos(horaInicio)
+    let minutosFin = convertirAMinutos(horaFin)
+    
+    // Si la hora de fin es menor que la de inicio, asumimos que cruzó medianoche
+    if (minutosFin < minutosInicio) {
+      minutosFin += 24 * 60 // Agregar 24 horas en minutos
+    }
+    
+    const duracionMinutos = minutosFin - minutosInicio
+    
+    // Formatear duración
+    if (duracionMinutos < 60) {
+      return `${duracionMinutos} min`
+    } else {
+      const horas = Math.floor(duracionMinutos / 60)
+      const minutos = duracionMinutos % 60
+      return minutos > 0 ? `${horas}h ${minutos}min` : `${horas}h`
+    }
+  }
+  
   const obtenerRival = (partida) => {
     return partida.jugador1 === cedula
       ? partida.jugador2_data
@@ -103,17 +140,21 @@ export default function JugadorPage() {
   };
 
   const obtenerResultado = (partida) => {
-    const esJugador1 = partida.jugador1 === cedula;
-    const misCarambolas = esJugador1
-      ? partida.carambolas1
-      : partida.carambolas2;
-    const rivalCarambolas = esJugador1
-      ? partida.carambolas2
-      : partida.carambolas1;
-    const misEntradas = esJugador1 ? partida.entradas1 : partida.entradas2;
-    const rivalEntradas = esJugador1 ? partida.entradas2 : partida.entradas1;
-    const miSerie = esJugador1 ? partida.seriemayor1 : partida.seriemayor2;
-    const rivalSerie = esJugador1 ? partida.seriemayor2 : partida.seriemayor1;
+    const esJugador1 = partida.jugador1 === cedula
+    const misCarambolas = esJugador1 ? partida.carambolas1 : partida.carambolas2
+    const rivalCarambolas = esJugador1 ? partida.carambolas2 : partida.carambolas1
+    const misEntradas = esJugador1 ? partida.entradas1 : partida.entradas2
+    const rivalEntradas = esJugador1 ? partida.entradas2 : partida.entradas1
+    const miSerie = esJugador1 ? partida.seriemayor1 : partida.seriemayor2
+    const rivalSerie = esJugador1 ? partida.seriemayor2 : partida.seriemayor1
+
+    // Determinar resultado
+    let resultado = 'empate'
+    if (misCarambolas > rivalCarambolas) {
+      resultado = 'victoria'
+    } else if (misCarambolas < rivalCarambolas) {
+      resultado = 'derrota'
+    }
 
     return {
       misCarambolas,
@@ -122,11 +163,13 @@ export default function JugadorPage() {
       rivalEntradas,
       miSerie,
       rivalSerie,
-      gane: misCarambolas > rivalCarambolas,
+      resultado,
+      gane: resultado === 'victoria',
+      empate: resultado === 'empate',
       miBola: esJugador1 ? 'blanca' : 'amarilla',
-      rivalBola: esJugador1 ? 'amarilla' : 'blanca',
-    };
-  };
+      rivalBola: esJugador1 ? 'amarilla' : 'blanca'
+    }
+  }
 
   return (
     <div className='min-h-screen bg-gray-50 p-4'>
@@ -152,7 +195,7 @@ export default function JugadorPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+            <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
               <div className='text-center p-4 bg-blue-50 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Target className='w-5 h-5 text-blue-500' />
@@ -192,6 +235,16 @@ export default function JugadorPage() {
                 </div>
                 <p className='text-sm text-gray-600'>Partidas</p>
               </div>
+
+              <div className='text-center p-4 bg-yellow-50 rounded-lg'>
+                <div className='flex items-center justify-center space-x-1 mb-1'>
+                  <Users className='w-5 h-5 text-yellow-500' />
+                  <span className='text-2xl font-bold text-yellow-600'>
+                    {jugador.total_entradas}
+                  </span>
+                </div>
+                <p className='text-sm text-gray-600'>Entradas</p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -216,15 +269,42 @@ export default function JugadorPage() {
                     <div className='border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer'>
                       <div className='flex items-center space-x-4'>
                         <div className='flex items-center space-x-2'>
-                          <Badge
-                            variant={resultado.gane ? 'default' : 'secondary'}
-                            className={
-                              resultado.gane ? 'bg-green-500' : 'bg-red-500'
+                        {/* Badge con función helper */}
+                        {(() => {
+                            const getBadgeProps = () => {
+                              if (resultado.empate) {
+                                return {
+                                  variant: "outline",
+                                  className: "border-gray-400 text-gray-600",
+                                  text: "Empate"
+                                }
+                              }
+                              if (resultado.gane) {
+                                return {
+                                  variant: "default",
+                                  className: "bg-green-500",
+                                  text: "Victoria"
+                                }
+                              }
+                              return {
+                                variant: "secondary",
+                                className: "bg-red-500",
+                                text: "Derrota"
+                              }
                             }
-                          >
-                            {resultado.gane ? 'Victoria' : 'Derrota'}
-                          </Badge>
+                            
+                            const badgeProps = getBadgeProps()
+                            return (
+                              <Badge variant={badgeProps.variant} className={badgeProps.className}>
+                                {badgeProps.text}
+                              </Badge>
+                            )
+                          })()}
 
+                          
+                        </div>
+
+                        <div>
                           {/* Indicador de bola */}
                           <div className='flex items-center space-x-1'>
                             <div
@@ -233,16 +313,22 @@ export default function JugadorPage() {
                                   ? 'bg-white border-gray-400'
                                   : 'bg-yellow-400 border-yellow-600'
                               }`}
-                              title={`Jugaste con bola ${resultado.miBola}`}
+                              title={`Jugó con bola ${resultado.miBola}`}
                             ></div>
-                            <span className='text-xs text-gray-600 capitalize'>
-                              {resultado.miBola}
+                            <span className='text-xs text-gray-600 uppercase'>
+                              Jugó con bola {resultado.miBola}
                             </span>
                           </div>
-                        </div>
-
-                        <div>
-                          <p className='font-semibold'>vs {rival.nombre}</p>
+                          <div className='font-semibold'>vs {rival.nombre}
+                          <div
+                              className={`inline-block w-3 h-3 rounded-full border ml-1 ${
+                                resultado.rivalBola === 'blanca'
+                                  ? 'bg-white border-gray-400'
+                                  : 'bg-yellow-400 border-yellow-600'
+                              }`}
+                              title={`${rival.nombre} jugó con bola ${resultado.rivalBola}`}
+                            ></div>
+                          </div>
                           <div className='flex items-center space-x-4 text-sm text-gray-600'>
                             <span className='flex items-center'>
                               <Calendar className='w-4 h-4 mr-1' />
@@ -250,7 +336,7 @@ export default function JugadorPage() {
                             </span>
                             <span className='flex items-center'>
                               <Clock className='w-4 h-4 mr-1' />
-                              {formatearHora(partida.hora_inicio)}
+                              {formatearHora(partida.hora_inicio)} ({calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})
                             </span>
                           </div>
                         </div>
@@ -262,7 +348,7 @@ export default function JugadorPage() {
                           {resultado.rivalCarambolas}
                         </div>
                         <div className='text-sm text-gray-600'>
-                          Serie: {resultado.miSerie} vs {resultado.rivalSerie}
+                          Mayor Serie: {resultado.miSerie} vs {resultado.rivalSerie}
                         </div>
                         <div className='text-xs text-gray-500 flex items-center justify-end space-x-2'>
                           <span>Partida #{partida.id}</span>
