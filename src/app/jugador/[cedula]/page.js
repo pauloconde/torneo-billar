@@ -6,7 +6,15 @@ import { obtenerPartidasJugador, obtenerRanking } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, Clock, Trophy, Target, BarChart3, Users } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Trophy,
+  Target,
+  BarChart3,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 
 export default function JugadorPage() {
@@ -53,7 +61,9 @@ export default function JugadorPage() {
         <div className='max-w-4xl mx-auto'>
           <div className='text-center py-8'>
             <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto'></div>
-            <p className='mt-4 text-muted-foreground'>Cargando datos del jugador...</p>
+            <p className='mt-4 text-muted-foreground'>
+              Cargando datos del jugador...
+            </p>
           </div>
         </div>
       </div>
@@ -85,58 +95,58 @@ export default function JugadorPage() {
   };
 
   const formatearHora = (hora) => {
-    if (!hora) return ''
-    
+    if (!hora) return '';
+
     // Convertir hora en formato HH:MM a formato 12 horas
-    const [horas, minutos] = hora.split(':')
-    const horaNum = parseInt(horas)
-    const ampm = horaNum >= 12 ? 'PM' : 'AM'
-    const hora12 = horaNum % 12 || 12 // 0 se convierte en 12
-    
-    return `${hora12}:${minutos} ${ampm}`
-  }
+    const [horas, minutos] = hora.split(':');
+    const horaNum = parseInt(horas);
+    const ampm = horaNum >= 12 ? 'PM' : 'AM';
+    const hora12 = horaNum % 12 || 12; // 0 se convierte en 12
+
+    return `${hora12}:${minutos} ${ampm}`;
+  };
 
   const calcularDuracionPartida = (horaInicio, horaFin) => {
-    if (!horaInicio || !horaFin) return null
-    
+    if (!horaInicio || !horaFin) return null;
+
     // Convertir horas a minutos desde medianoche
     const convertirAMinutos = (hora) => {
-      const [horas, minutos] = hora.split(':').map(Number)
-      return horas * 60 + minutos
-    }
-    
-    const minutosInicio = convertirAMinutos(horaInicio)
-    let minutosFin = convertirAMinutos(horaFin)
-    
+      const [horas, minutos] = hora.split(':').map(Number);
+      return horas * 60 + minutos;
+    };
+
+    const minutosInicio = convertirAMinutos(horaInicio);
+    let minutosFin = convertirAMinutos(horaFin);
+
     // Si la hora de fin es menor que la de inicio, asumimos que cruzó medianoche
     if (minutosFin < minutosInicio) {
-      minutosFin += 24 * 60 // Agregar 24 horas en minutos
+      minutosFin += 24 * 60; // Agregar 24 horas en minutos
     }
-    
-    const duracionMinutos = minutosFin - minutosInicio
-    
+
+    const duracionMinutos = minutosFin - minutosInicio;
+
     // Formatear duración
     if (duracionMinutos < 60) {
-      return `${duracionMinutos} min`
+      return `${duracionMinutos} min`;
     } else {
-      const horas = Math.floor(duracionMinutos / 60)
-      const minutos = duracionMinutos % 60
-      return minutos > 0 ? `${horas}h ${minutos}min` : `${horas}h`
+      const horas = Math.floor(duracionMinutos / 60);
+      const minutos = duracionMinutos % 60;
+      return minutos > 0 ? `${horas}h ${minutos}min` : `${horas}h`;
     }
-  }
+  };
 
   const formatearNombre = (nombre) => {
     // Buscar la primera coma y dividir ahí
-    const indiceComa = nombre.indexOf(',')
+    const indiceComa = nombre.indexOf(',');
     if (indiceComa !== -1) {
-      const apellidos = nombre.substring(0, indiceComa)
-      const nombres = nombre.substring(indiceComa + 1).trim()
-      return { apellidos, nombres }
+      const apellidos = nombre.substring(0, indiceComa);
+      const nombres = nombre.substring(indiceComa + 1).trim();
+      return { apellidos, nombres };
     }
     // Si no hay coma, devolver como apellidos
-    return { apellidos: nombre, nombres: '' }
-  }
-  
+    return { apellidos: nombre, nombres: '' };
+  };
+
   const obtenerRival = (partida) => {
     return partida.jugador1 === cedula
       ? partida.jugador2_data
@@ -144,20 +154,24 @@ export default function JugadorPage() {
   };
 
   const obtenerResultado = (partida) => {
-    const esJugador1 = partida.jugador1 === cedula
-    const misCarambolas = esJugador1 ? partida.carambolas1 : partida.carambolas2
-    const rivalCarambolas = esJugador1 ? partida.carambolas2 : partida.carambolas1
-    const misEntradas = esJugador1 ? partida.entradas1 : partida.entradas2
-    const rivalEntradas = esJugador1 ? partida.entradas2 : partida.entradas1
-    const miSerie = esJugador1 ? partida.seriemayor1 : partida.seriemayor2
-    const rivalSerie = esJugador1 ? partida.seriemayor2 : partida.seriemayor1
+    const esJugador1 = partida.jugador1 === cedula;
+    const misCarambolas = esJugador1
+      ? partida.carambolas1
+      : partida.carambolas2;
+    const rivalCarambolas = esJugador1
+      ? partida.carambolas2
+      : partida.carambolas1;
+    const misEntradas = esJugador1 ? partida.entradas1 : partida.entradas2;
+    const rivalEntradas = esJugador1 ? partida.entradas2 : partida.entradas1;
+    const miSerie = esJugador1 ? partida.seriemayor1 : partida.seriemayor2;
+    const rivalSerie = esJugador1 ? partida.seriemayor2 : partida.seriemayor1;
 
     // Determinar resultado
-    let resultado = 'empate'
+    let resultado = 'empate';
     if (misCarambolas > rivalCarambolas) {
-      resultado = 'victoria'
+      resultado = 'victoria';
     } else if (misCarambolas < rivalCarambolas) {
-      resultado = 'derrota'
+      resultado = 'derrota';
     }
 
     return {
@@ -171,9 +185,9 @@ export default function JugadorPage() {
       gane: resultado === 'victoria',
       empate: resultado === 'empate',
       miBola: esJugador1 ? 'blanca' : 'amarilla',
-      rivalBola: esJugador1 ? 'amarilla' : 'blanca'
-    }
-  }
+      rivalBola: esJugador1 ? 'amarilla' : 'blanca',
+    };
+  };
 
   return (
     <div className='min-h-screen bg-background p-4'>
@@ -227,7 +241,9 @@ export default function JugadorPage() {
                     {jugador.total_carambolas}
                   </span>
                 </div>
-                <p className='text-sm text-muted-foreground'>Total Carambolas</p>
+                <p className='text-sm text-muted-foreground'>
+                  Total Carambolas
+                </p>
               </div>
 
               <div className='text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg'>
@@ -256,10 +272,12 @@ export default function JugadorPage() {
         {/* Lista de partidas */}
         <Card className='border-border'>
           <CardHeader>
-            <CardTitle className='text-foreground'>Historial de Partidas</CardTitle>
+            <CardTitle className='text-foreground'>
+              Historial de Partidas
+            </CardTitle>
           </CardHeader>
           <CardContent>
-          <div className='space-y-4'>
+            <div className='space-y-4'>
               {partidas.map((partida) => {
                 const rival = obtenerRival(partida);
                 const resultado = obtenerResultado(partida);
@@ -286,41 +304,46 @@ export default function JugadorPage() {
                             Jugó con bola {resultado.miBola}
                           </span>
                         </div>
-                        
+
                         {(() => {
                           const getBadgeProps = () => {
                             if (resultado.empate) {
                               return {
-                                variant: "outline",
-                                className: "border-muted-foreground text-muted-foreground",
-                                text: "Empate"
-                              }
+                                variant: 'outline',
+                                className:
+                                  'border-muted-foreground text-muted-foreground',
+                                text: 'Empate',
+                              };
                             }
                             if (resultado.gane) {
                               return {
-                                variant: "default",
-                                className: "bg-green-500 hover:bg-green-600",
-                                text: "Victoria"
-                              }
+                                variant: 'default',
+                                className: 'bg-green-500 hover:bg-green-600',
+                                text: 'Victoria',
+                              };
                             }
                             return {
-                              variant: "secondary",
-                              className: "bg-red-500 hover:bg-red-600 text-white",
-                              text: "Derrota"
-                            }
-                          }
-                          
-                          const badgeProps = getBadgeProps()
+                              variant: 'secondary',
+                              className:
+                                'bg-red-500 hover:bg-red-600 text-white',
+                              text: 'Derrota',
+                            };
+                          };
+
+                          const badgeProps = getBadgeProps();
                           return (
-                            <Badge variant={badgeProps.variant} className={badgeProps.className}>
+                            <Badge
+                              variant={badgeProps.variant}
+                              className={badgeProps.className}
+                            >
                               {badgeProps.text}
                             </Badge>
-                          )
+                          );
                         })()}
                       </div>
 
-                     {/* Rival y resultado - MÓVIL */}
-                     <div className='flex items-center justify-between mb-3'>
+                      {/* Rival y resultado - MÓVIL */}
+                      <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center space-x-2'>
                           <div className='flex flex-col'>
                             <div className='flex items-center space-x-1'>
@@ -344,36 +367,47 @@ export default function JugadorPage() {
                         </div>
                         <div className='text-right'>
                           <div className='text-2xl font-bold text-foreground'>
-                            {resultado.misCarambolas} - {resultado.rivalCarambolas}
+                            {resultado.misCarambolas} -{' '}
+                            {resultado.rivalCarambolas}
                           </div>
                         </div>
                       </div>
 
                       {/* Series */}
-                      <div className='flex justify-between items-center mb-3'>
-                        <span className='text-sm text-muted-foreground'>Mayor Serie:</span>
-                        <span className='text-sm font-medium text-foreground'>
-                          {resultado.miSerie} vs {resultado.rivalSerie}
+                      <div className='flex justify-end items-center mb-3'>
+                        <span className='text-sm text-muted-foreground'>
+                          Serie: 
                         </span>
+                        <div className='text-sm font-medium text-foreground'>
+                          &nbsp;{resultado.miSerie} vs {resultado.rivalSerie}
+                        </div>
+                        
                       </div>
 
                       {/* Footer con fecha, hora y partida */}
                       <div className='flex justify-between items-center text-xs text-muted-foreground'>
-                        <div className='flex items-center space-x-3'>
-                          <span className='flex items-center'>
+                        <div className='flex-col items-center space-x-3'>
+                          <div className='flex items-center'>
                             <Calendar className='w-3 h-3 mr-1' />
                             {formatearFecha(partida.fecha)}
-                          </span>
-                          <span className='flex items-center'>
+                          </div>
+                          <div className='flex items-center'>
                             <Clock className='w-3 h-3 mr-1' />
                             {formatearHora(partida.hora_inicio)}
-                          </span>
-                        </div>
-                        <div className='flex items-center space-x-2'>
-                          {partida.hora_fin && (
-                            <span>({calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})</span>
-                          )}
-                          <span>Partida #{partida.id}</span>
+                            <span className='flex items-center space-x-2'>
+                              {partida.hora_fin && (
+                                <span>
+                                  &nbsp;(
+                                  {calcularDuracionPartida(
+                                    partida.hora_inicio,
+                                    partida.hora_fin
+                                  )}
+                                  )
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                          <div className='text-xs text-muted-foreground pt-2'>Partida #{partida.id}</div>
                         </div>
                       </div>
                     </div>
@@ -387,31 +421,37 @@ export default function JugadorPage() {
                               const getBadgeProps = () => {
                                 if (resultado.empate) {
                                   return {
-                                    variant: "outline",
-                                    className: "border-muted-foreground text-muted-foreground",
-                                    text: "Empate"
-                                  }
+                                    variant: 'outline',
+                                    className:
+                                      'border-muted-foreground text-muted-foreground',
+                                    text: 'Empate',
+                                  };
                                 }
                                 if (resultado.gane) {
                                   return {
-                                    variant: "default",
-                                    className: "bg-green-500 hover:bg-green-600",
-                                    text: "Victoria"
-                                  }
+                                    variant: 'default',
+                                    className:
+                                      'bg-green-500 hover:bg-green-600',
+                                    text: 'Victoria',
+                                  };
                                 }
                                 return {
-                                  variant: "secondary",
-                                  className: "bg-red-500 hover:bg-red-600 text-white",
-                                  text: "Derrota"
-                                }
-                              }
-                              
-                              const badgeProps = getBadgeProps()
+                                  variant: 'secondary',
+                                  className:
+                                    'bg-red-500 hover:bg-red-600 text-white',
+                                  text: 'Derrota',
+                                };
+                              };
+
+                              const badgeProps = getBadgeProps();
                               return (
-                                <Badge variant={badgeProps.variant} className={badgeProps.className}>
+                                <Badge
+                                  variant={badgeProps.variant}
+                                  className={badgeProps.className}
+                                >
                                   {badgeProps.text}
                                 </Badge>
-                              )
+                              );
                             })()}
                           </div>
 
@@ -445,8 +485,12 @@ export default function JugadorPage() {
                               </span>
                               <span className='flex items-center'>
                                 <Clock className='w-4 h-4 mr-1' />
-                                {formatearHora(partida.hora_inicio)} 
-                                {partida.hora_fin && ` (${calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})`}
+                                {formatearHora(partida.hora_inicio)}
+                                {partida.hora_fin &&
+                                  ` (${calcularDuracionPartida(
+                                    partida.hora_inicio,
+                                    partida.hora_fin
+                                  )})`}
                               </span>
                             </div>
                           </div>
@@ -454,10 +498,12 @@ export default function JugadorPage() {
 
                         <div className='text-right'>
                           <div className='text-lg font-bold text-foreground'>
-                            {resultado.misCarambolas} - {resultado.rivalCarambolas}
+                            {resultado.misCarambolas} -{' '}
+                            {resultado.rivalCarambolas}
                           </div>
                           <div className='text-sm text-muted-foreground'>
-                            Mayor Serie: {resultado.miSerie} vs {resultado.rivalSerie}
+                            Mayor Serie: {resultado.miSerie} vs{' '}
+                            {resultado.rivalSerie}
                           </div>
                           <div className='text-xs text-muted-foreground'>
                             Partida #{partida.id}
@@ -472,7 +518,9 @@ export default function JugadorPage() {
 
             {partidas.length === 0 && (
               <div className='text-center py-8'>
-                <p className='text-muted-foreground'>No hay partidas registradas</p>
+                <p className='text-muted-foreground'>
+                  No hay partidas registradas
+                </p>
               </div>
             )}
           </CardContent>
