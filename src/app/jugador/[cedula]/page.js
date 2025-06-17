@@ -124,6 +124,18 @@ export default function JugadorPage() {
       return minutos > 0 ? `${horas}h ${minutos}min` : `${horas}h`
     }
   }
+
+  const formatearNombre = (nombre) => {
+    // Buscar la primera coma y dividir ahí
+    const indiceComa = nombre.indexOf(',')
+    if (indiceComa !== -1) {
+      const apellidos = nombre.substring(0, indiceComa)
+      const nombres = nombre.substring(indiceComa + 1).trim()
+      return { apellidos, nombres }
+    }
+    // Si no hay coma, devolver como apellidos
+    return { apellidos: nombre, nombres: '' }
+  }
   
   const obtenerRival = (partida) => {
     return partida.jugador1 === cedula
@@ -247,7 +259,7 @@ export default function JugadorPage() {
             <CardTitle className='text-foreground'>Historial de Partidas</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='space-y-4'>
+          <div className='space-y-4'>
               {partidas.map((partida) => {
                 const rival = obtenerRival(partida);
                 const resultado = obtenerResultado(partida);
@@ -258,11 +270,119 @@ export default function JugadorPage() {
                     href={`/partida/${partida.id}`}
                     className='block'
                   >
-                    <div className='border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors cursor-pointer'>
+                    {/* Layout para móvil */}
+                    <div className='block md:hidden border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors cursor-pointer'>
+                      {/* Header con bola y badge */}
+                      <div className='flex items-center justify-between mb-3'>
+                        <div className='flex items-center space-x-2'>
+                          <div
+                            className={`w-4 h-4 rounded-full border-2 ${
+                              resultado.miBola === 'blanca'
+                                ? 'bg-white border-gray-400'
+                                : 'bg-yellow-400 border-yellow-600'
+                            }`}
+                          ></div>
+                          <span className='text-xs text-muted-foreground uppercase font-medium'>
+                            Jugó con bola {resultado.miBola}
+                          </span>
+                        </div>
+                        
+                        {(() => {
+                          const getBadgeProps = () => {
+                            if (resultado.empate) {
+                              return {
+                                variant: "outline",
+                                className: "border-muted-foreground text-muted-foreground",
+                                text: "Empate"
+                              }
+                            }
+                            if (resultado.gane) {
+                              return {
+                                variant: "default",
+                                className: "bg-green-500 hover:bg-green-600",
+                                text: "Victoria"
+                              }
+                            }
+                            return {
+                              variant: "secondary",
+                              className: "bg-red-500 hover:bg-red-600 text-white",
+                              text: "Derrota"
+                            }
+                          }
+                          
+                          const badgeProps = getBadgeProps()
+                          return (
+                            <Badge variant={badgeProps.variant} className={badgeProps.className}>
+                              {badgeProps.text}
+                            </Badge>
+                          )
+                        })()}
+                      </div>
+
+                     {/* Rival y resultado - MÓVIL */}
+                     <div className='flex items-center justify-between mb-3'>
+                        <div className='flex items-center space-x-2'>
+                          <div className='flex flex-col'>
+                            <div className='flex items-center space-x-1'>
+                              <span className='font-semibold text-foreground text-sm'>
+                                vs {formatearNombre(rival.nombre).apellidos}
+                              </span>
+                              <div
+                                className={`w-3 h-3 rounded-full border ${
+                                  resultado.rivalBola === 'blanca'
+                                    ? 'bg-white border-gray-400'
+                                    : 'bg-yellow-400 border-yellow-600'
+                                }`}
+                              ></div>
+                            </div>
+                            {formatearNombre(rival.nombre).nombres && (
+                              <span className='text-sm text-foreground ml-5'>
+                                {formatearNombre(rival.nombre).nombres}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className='text-right'>
+                          <div className='text-2xl font-bold text-foreground'>
+                            {resultado.misCarambolas} - {resultado.rivalCarambolas}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Series */}
+                      <div className='flex justify-between items-center mb-3'>
+                        <span className='text-sm text-muted-foreground'>Mayor Serie:</span>
+                        <span className='text-sm font-medium text-foreground'>
+                          {resultado.miSerie} vs {resultado.rivalSerie}
+                        </span>
+                      </div>
+
+                      {/* Footer con fecha, hora y partida */}
+                      <div className='flex justify-between items-center text-xs text-muted-foreground'>
+                        <div className='flex items-center space-x-3'>
+                          <span className='flex items-center'>
+                            <Calendar className='w-3 h-3 mr-1' />
+                            {formatearFecha(partida.fecha)}
+                          </span>
+                          <span className='flex items-center'>
+                            <Clock className='w-3 h-3 mr-1' />
+                            {formatearHora(partida.hora_inicio)}
+                          </span>
+                        </div>
+                        <div className='flex items-center space-x-2'>
+                          {partida.hora_fin && (
+                            <span>({calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})</span>
+                          )}
+                          <span>Partida #{partida.id}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Layout para desktop */}
+                    <div className='hidden md:block border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors cursor-pointer'>
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center space-x-4'>
                           <div className='flex items-center space-x-2'>
-                            {/* Badge con función helper */}
                             {(() => {
                               const getBadgeProps = () => {
                                 if (resultado.empate) {
@@ -296,7 +416,6 @@ export default function JugadorPage() {
                           </div>
 
                           <div>
-                            {/* Indicador de bola */}
                             <div className='flex items-center space-x-1 mb-1'>
                               <div
                                 className={`w-4 h-4 rounded-full border-2 ${
@@ -304,7 +423,6 @@ export default function JugadorPage() {
                                     ? 'bg-white border-gray-400'
                                     : 'bg-yellow-400 border-yellow-600'
                                 }`}
-                                title={`Jugó con bola ${resultado.miBola}`}
                               ></div>
                               <span className='text-xs text-muted-foreground uppercase'>
                                 Jugó con bola {resultado.miBola}
@@ -318,7 +436,6 @@ export default function JugadorPage() {
                                     ? 'bg-white border-gray-400'
                                     : 'bg-yellow-400 border-yellow-600'
                                 }`}
-                                title={`${rival.nombre} jugó con bola ${resultado.rivalBola}`}
                               ></div>
                             </div>
                             <div className='flex items-center space-x-4 text-sm text-muted-foreground'>
@@ -328,7 +445,8 @@ export default function JugadorPage() {
                               </span>
                               <span className='flex items-center'>
                                 <Clock className='w-4 h-4 mr-1' />
-                                {formatearHora(partida.hora_inicio)} ({calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})
+                                {formatearHora(partida.hora_inicio)} 
+                                {partida.hora_fin && ` (${calcularDuracionPartida(partida.hora_inicio, partida.hora_fin)})`}
                               </span>
                             </div>
                           </div>
@@ -336,8 +454,7 @@ export default function JugadorPage() {
 
                         <div className='text-right'>
                           <div className='text-lg font-bold text-foreground'>
-                            {resultado.misCarambolas} -{' '}
-                            {resultado.rivalCarambolas}
+                            {resultado.misCarambolas} - {resultado.rivalCarambolas}
                           </div>
                           <div className='text-sm text-muted-foreground'>
                             Mayor Serie: {resultado.miSerie} vs {resultado.rivalSerie}
