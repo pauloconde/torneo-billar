@@ -318,13 +318,13 @@ export default function PartidaPage() {
                 <div className='text-2xl font-bold text-foreground'>
                   {partida.seriemayor1}
                 </div>
-                <p className='text-sm text-muted-foreground'>Serie Blanca</p>
+                <p className='text-sm text-muted-foreground'>Mejor Serie Blanca</p>
               </div>
               <div className='text-center'>
                 <div className='text-2xl font-bold text-yellow-400'>
                   {partida.seriemayor2}
                 </div>
-                <p className='text-sm text-muted-foreground'>Serie Amarilla</p>
+                <p className='text-sm text-muted-foreground'>Mejor Serie Amarilla</p>
               </div>
             </div>
           </CardContent>
