@@ -275,6 +275,7 @@ export default function PartidaPage() {
                   {partida.carambolas1}
                 </div>
                 {obtenerBadgeResultado('jugador1')}
+                <div className='mt-2 text-md text-muted-foreground'>{(partida.carambolas1 / partida.entradas1).toFixed(3)}</div>
               </div>
 
               {/* VS */}
@@ -302,6 +303,7 @@ export default function PartidaPage() {
                   {partida.carambolas2}
                 </div>
                 {obtenerBadgeResultado('jugador2')}
+                <div className='mt-2 text-md text-muted-foreground'>{(partida.carambolas2 / partida.entradas2).toFixed(3)}</div>
               </div>
             </div>
 
