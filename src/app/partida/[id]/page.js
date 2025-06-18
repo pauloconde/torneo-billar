@@ -11,7 +11,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { ArrowLeft, Calendar, Clock, Trophy, Target } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Trophy, Target, Star } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -156,6 +156,8 @@ export default function PartidaPage() {
           [partida.jugador2_data.nombre]: acumulado2,
           carambolas1: entrada.carambolas_jugador1 || 0,
           carambolas2: entrada.carambolas_jugador2 || 0,
+          serie1: entrada.serie1 || false,
+          serie2: entrada.serie2 || false,
         };
       });
   };
@@ -318,13 +320,17 @@ export default function PartidaPage() {
                 <div className='text-2xl font-bold text-foreground'>
                   {partida.seriemayor1}
                 </div>
-                <p className='text-sm text-muted-foreground'>Mejor Serie Blanca</p>
+                <p className='text-sm text-muted-foreground'>
+                  Mejor Serie Blanca
+                </p>
               </div>
               <div className='text-center'>
                 <div className='text-2xl font-bold text-yellow-400'>
                   {partida.seriemayor2}
                 </div>
-                <p className='text-sm text-muted-foreground'>Mejor Serie Amarilla</p>
+                <p className='text-sm text-muted-foreground'>
+                  Mejor Serie Amarilla
+                </p>
               </div>
             </div>
           </CardContent>
@@ -467,7 +473,7 @@ export default function PartidaPage() {
           <CardHeader>
             <CardTitle className='flex items-center space-x-2'>
               <Target className='w-5 h-5' />
-              <span>Detalle por entrada</span>
+              <span>Detalle por entradas</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -482,12 +488,23 @@ export default function PartidaPage() {
                           <div className='w-3 h-3 rounded-full bg-white'></div>
                           <span>{entrada.carambolas1}</span>
                         </span>
+                        <Star
+                          className='w-2 h-2 inline-block ml-1 -mt-1'
+                          color={entrada.serie1 ? '#eab308' : 'transparent'} // amarillo-500 de Tailwind
+                          fill={entrada.serie1 ? '#eab308' : 'transparent'}
+                        />
                       </td>
                       <td className='text-center p-2'>
                         <span className='inline-flex items-center space-x-1'>
                           <div className='w-3 h-3 rounded-full bg-yellow-500'></div>
                           <span>{entrada.carambolas2}</span>
                         </span>
+
+                        <Star
+                          className='w-2 h-2 inline-block ml-1 -mt-1'
+                          color={entrada.serie2 ? '#eab308' : 'transparent'} // amarillo-500 de Tailwind
+                          fill={entrada.serie2 ? '#eab308' : 'transparent'}
+                        />
                       </td>
                       <td className='text-center p-2 text-sm text-muted-foreground'>
                         {entrada[partida.jugador1_data.nombre]} -{' '}
@@ -495,6 +512,7 @@ export default function PartidaPage() {
                       </td>
                     </tr>
                   ))}
+                  {console.log('Entrada:', dataEvolucion)}
                 </tbody>
               </table>
             </div>
