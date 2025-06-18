@@ -6,7 +6,7 @@ import { obtenerPartidasJugador, obtenerRanking } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, Clock, Trophy, Target, BarChart3, Users, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Trophy, Target, BarChart3, Users, ChevronRight } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Link from 'next/link';
 
@@ -409,13 +409,13 @@ export default function JugadorPage() {
                                     )}
                                   </span>
                                 </div>
-                                <div className='flex items-center justify-between'>
+                                <div className='flex items-center justify-between '>
                                   <div className='text-xs text-white pt-1 border-t-2 mt-1'>
                                     Partida #{partida.id}
                                   </div>
-                                  <Eye className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors ml-2" />
                                 </div>
                               </div>
+                                  <ChevronRight className="w-5 h-5" />
                             </div>
                           </div>
 
@@ -517,7 +517,7 @@ export default function JugadorPage() {
                                     Partida #{partida.id}
                                   </div>
                                 </div>
-                                <Eye className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                <ChevronRight className="w-5 h-5" />
                               </div>
                             </div>
                           </div>
