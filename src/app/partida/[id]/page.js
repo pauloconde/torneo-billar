@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { ArrowLeft, Calendar, Clock, Trophy, Target, BarChart3 } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, Trophy, Target } from "lucide-react"
 import {
   LineChart,
   Line,
@@ -18,10 +18,7 @@ import {
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
-  Legend,
-  Tooltip,
+  Tooltip
 } from "recharts"
 
 export default function PartidaPage() {
@@ -176,23 +173,9 @@ export default function PartidaPage() {
     ]
   }
 
-  // Preparar datos para el bar chart de series
-  const prepararDatosSeries = () => {
-    const nombre1 = formatearNombre(partida.jugador1_data.nombre).apellidos
-    const nombre2 = formatearNombre(partida.jugador2_data.nombre).apellidos
-
-    return [
-      {
-        categoria: "Serie Mayor",
-        [nombre1]: partida.seriemayor1,
-        [nombre2]: partida.seriemayor2,
-      },
-    ]
-  }
-
-  const dataEvolucion = prepararDatosEvolucion()
+   const dataEvolucion = prepararDatosEvolucion()
   const datosPie = prepararDatosPie()
-  const datosSeries = prepararDatosSeries()
+  
 
   const nombre1 = formatearNombre(partida.jugador1_data.nombre)
   const nombre2 = formatearNombre(partida.jugador2_data.nombre)
