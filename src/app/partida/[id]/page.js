@@ -275,7 +275,9 @@ export default function PartidaPage() {
                   {partida.carambolas1}
                 </div>
                 {obtenerBadgeResultado('jugador1')}
-                <div className='mt-2 text-md text-muted-foreground'>{(partida.carambolas1 / partida.entradas1).toFixed(3)}</div>
+                <div className='mt-2 text-md text-muted-foreground'>
+                  {(partida.carambolas1 / partida.entradas1).toFixed(3)}
+                </div>
               </div>
 
               {/* VS */}
@@ -303,7 +305,9 @@ export default function PartidaPage() {
                   {partida.carambolas2}
                 </div>
                 {obtenerBadgeResultado('jugador2')}
-                <div className='mt-2 text-md text-muted-foreground'>{(partida.carambolas2 / partida.entradas2).toFixed(3)}</div>
+                <div className='mt-2 text-md text-muted-foreground'>
+                  {(partida.carambolas2 / partida.entradas2).toFixed(3)}
+                </div>
               </div>
             </div>
 
@@ -476,47 +480,59 @@ export default function PartidaPage() {
             <CardTitle className='flex items-center space-x-2'>
               <Target className='w-5 h-5' />
               <span>Detalle por entradas</span>
+              <Star
+                className='w-2 h-2 inline-block ml-1 -mt-1'
+                color='#2B7FFF'
+                fill='#2B7FFF'
+              />
+              <span className='text-xs text-muted-foreground'>Mejor serie</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className='flex justify-center'>
             <div className='overflow-x-auto'>
-              <table className='w-full'>
-                <tbody>
-                  {dataEvolucion.map((entrada, index) => (
-                    <tr key={index} className='border-b border-border/50'>
-                      <td className='p-2 font-medium'>{entrada.entrada}</td>
-                      <td className='text-center p-2'>
-                        <span className='inline-flex items-center space-x-1'>
-                          <div className='w-3 h-3 rounded-full bg-white'></div>
-                          <span>{entrada.carambolas1}</span>
-                        </span>
-                        <Star
-                          className='w-2 h-2 inline-block ml-1 -mt-1'
-                          color={entrada.serie1 ? '#eab308' : 'transparent'} // amarillo-500 de Tailwind
-                          fill={entrada.serie1 ? '#eab308' : 'transparent'}
-                        />
-                      </td>
-                      <td className='text-center p-2'>
-                        <span className='inline-flex items-center space-x-1'>
-                          <div className='w-3 h-3 rounded-full bg-yellow-500'></div>
-                          <span>{entrada.carambolas2}</span>
-                        </span>
+              {dataEvolucion.length === 0 ? (
+                <div className='text-center py-8 text-muted-foreground'>
+                  No hay datos de entradas para esta partida.
+                </div>
+              ) : (
+                <table className='w-full md:w-[350]'>
+                  <tbody>
+                    {dataEvolucion.map((entrada, index) => (
+                      <tr key={index} className='border-b border-border/50'>
+                        <td className='p-2 font-medium'>{entrada.entrada}</td>
+                        <td className='text-center p-2'>
+                          <span className='inline-flex items-center space-x-1'>
+                            <div className='w-3 h-3 rounded-full bg-white'></div>
+                            <span>{entrada.carambolas1}</span>
+                          </span>
+                          <Star
+                            className='w-2 h-2 inline-block ml-1 -mt-1'
+                            color={entrada.serie1 ? '#2B7FFF' : 'transparent'} // amarillo-500 de Tailwind
+                            fill={entrada.serie1 ? '#2B7FFF' : 'transparent'}
+                          />
+                        </td>
+                        <td className='text-center p-2'>
+                          <span className='inline-flex items-center space-x-1'>
+                            <div className='w-3 h-3 rounded-full bg-yellow-500'></div>
+                            <span>{entrada.carambolas2}</span>
+                          </span>
 
-                        <Star
-                          className='w-2 h-2 inline-block ml-1 -mt-1'
-                          color={entrada.serie2 ? '#eab308' : 'transparent'} // amarillo-500 de Tailwind
-                          fill={entrada.serie2 ? '#eab308' : 'transparent'}
-                        />
-                      </td>
-                      <td className='text-center p-2 text-sm text-muted-foreground'>
-                        {entrada[partida.jugador1_data.nombre]} -{' '}
-                        {entrada[partida.jugador2_data.nombre]}
-                      </td>
-                    </tr>
-                  ))}
-                  {console.log('Entrada:', dataEvolucion)}
-                </tbody>
-              </table>
+                          <Star
+                            className='w-2 h-2 inline-block ml-1 -mt-1'
+                            color={entrada.serie2 ? '#2B7FFF' : 'transparent'} // amarillo-500 de Tailwind
+                            fill={entrada.serie2 ? '#2B7FFF' : 'transparent'}
+                          />
+                        </td>
+                        <td className='text-center p-2 text-sm text-muted-foreground'>
+                          {entrada[partida.jugador1_data.nombre]} -{' '}
+                          {entrada[partida.jugador2_data.nombre]}
+                        </td>
+                      </tr>
+                    ))}
+                    {console.log('Entrada:', dataEvolucion)}
+                  </tbody>
+                </table>
+              )}
             </div>
           </CardContent>
         </Card>
