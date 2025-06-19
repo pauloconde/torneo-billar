@@ -434,7 +434,7 @@ export default function JugadorPage() {
                             <div className='flex items-center justify-between'>
                               <div className='flex items-center space-x-4'>
                                 <div className='flex-col'>
-                                  <div className='flex items-center space-x-2'>
+                                  <div className='flex items-center space-x-1 mb-1 pl-2 text-sm text-muted-foreground'>
                                     {(
                                       partida.carambolas2 / partida.entradas2
                                     ).toFixed(3)}
