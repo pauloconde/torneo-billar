@@ -6,8 +6,22 @@ import { obtenerPartidasJugador, obtenerRanking } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Calendar, Clock, Trophy, Target, BarChart3, Users, ChevronRight } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Trophy,
+  Target,
+  BarChart3,
+  Users,
+  ChevronRight,
+} from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import Link from 'next/link';
 
 export default function JugadorPage() {
@@ -279,10 +293,7 @@ export default function JugadorPage() {
                   return (
                     <Tooltip key={partida.id}>
                       <TooltipTrigger asChild>
-                        <Link
-                          href={`/partida/${partida.id}`}
-                          className='block'
-                        >
+                        <Link href={`/partida/${partida.id}`} className='block'>
                           {/* Layout para móvil */}
                           <div className='block md:hidden border border-border rounded-lg p-4 hover:bg-muted/50 transition-all duration-200 cursor-pointer group hover:border-primary/50'>
                             {/* Header con bola y badge */}
@@ -313,7 +324,8 @@ export default function JugadorPage() {
                                   if (resultado.gane) {
                                     return {
                                       variant: 'default',
-                                      className: 'bg-green-500 hover:bg-green-600',
+                                      className:
+                                        'bg-green-500 hover:bg-green-600',
                                       text: 'Victoria',
                                     };
                                   }
@@ -341,7 +353,7 @@ export default function JugadorPage() {
                             <div className='flex items-center justify-between mb-3'>
                               <div className='flex items-center space-x-2'>
                                 <div className='flex flex-col'>
-                                <p className='text-sm'>vs.</p>
+                                  <p className='text-sm'>vs.</p>
                                   <div className='flex items-center space-x-1'>
                                     <span className='font-semibold text-foreground text-md'>
                                       {formatearNombre(rival.nombre).apellidos}
@@ -353,7 +365,6 @@ export default function JugadorPage() {
                                           : 'bg-yellow-400 border-yellow-600'
                                       }`}
                                     ></div>
-                                    
                                   </div>
                                   {formatearNombre(rival.nombre).nombres && (
                                     <span className='text-md text-foreground -mt-2'>
@@ -372,18 +383,17 @@ export default function JugadorPage() {
 
                             {/* Series */}
                             <div className='flex justify-end items-center mb-3'>
-                                <div className='text-sm text-muted-foreground'>
-                                  Serie:&nbsp;
+                              <div className='text-sm text-muted-foreground'>
+                                Serie:&nbsp;
+                              </div>
+                              <Badge
+                                variant='outline'
+                                className='border-border text-md'
+                              >
+                                <div className='font-medium text-foreground'>
+                                  {resultado.miSerie} vs {resultado.rivalSerie}
                                 </div>
-                                <Badge
-                                  variant='outline'
-                                  className='border-border text-md'
-                                >
-                                  <div className='font-medium text-foreground'>
-                                    {resultado.miSerie} vs{' '}
-                                    {resultado.rivalSerie}
-                                  </div>
-                                </Badge>
+                              </Badge>
                             </div>
 
                             {/* Footer con fecha, hora y partida */}
@@ -415,7 +425,7 @@ export default function JugadorPage() {
                                   </div>
                                 </div>
                               </div>
-                                  <ChevronRight className="w-5 h-5" />
+                              <ChevronRight className='w-5 h-5' />
                             </div>
                           </div>
 
@@ -423,45 +433,51 @@ export default function JugadorPage() {
                           <div className='hidden md:block border border-border rounded-lg p-4 hover:bg-muted/50 transition-all duration-200 cursor-pointer group hover:border-primary/50'>
                             <div className='flex items-center justify-between'>
                               <div className='flex items-center space-x-4'>
-                                <div className='flex items-center space-x-2'>
-                                  {(() => {
-                                    const getBadgeProps = () => {
-                                      if (resultado.empate) {
+                                <div className='flex-col'>
+                                  <div className='flex items-center space-x-2'>
+                                    {(
+                                      partida.carambolas2 / partida.entradas2
+                                    ).toFixed(3)}
+                                  </div>
+                                  <div className='flex items-center space-x-2'>
+                                    {(() => {
+                                      const getBadgeProps = () => {
+                                        if (resultado.empate) {
+                                          return {
+                                            variant: 'outline',
+                                            className:
+                                              'border-muted-foreground text-muted-foreground',
+                                            text: 'Empate',
+                                          };
+                                        }
+                                        if (resultado.gane) {
+                                          return {
+                                            variant: 'default',
+                                            className:
+                                              'bg-green-500 hover:bg-green-600',
+                                            text: 'Victoria',
+                                          };
+                                        }
                                         return {
-                                          variant: 'outline',
+                                          variant: 'secondary',
                                           className:
-                                            'border-muted-foreground text-muted-foreground',
-                                          text: 'Empate',
+                                            'bg-red-500 hover:bg-red-600 text-white',
+                                          text: 'Derrota',
                                         };
-                                      }
-                                      if (resultado.gane) {
-                                        return {
-                                          variant: 'default',
-                                          className:
-                                            'bg-green-500 hover:bg-green-600',
-                                          text: 'Victoria',
-                                        };
-                                      }
-                                      return {
-                                        variant: 'secondary',
-                                        className:
-                                          'bg-red-500 hover:bg-red-600 text-white',
-                                        text: 'Derrota',
                                       };
-                                    };
 
-                                    const badgeProps = getBadgeProps();
-                                    return (
-                                      <Badge
-                                        variant={badgeProps.variant}
-                                        className={badgeProps.className}
-                                      >
-                                        {badgeProps.text}
-                                      </Badge>
-                                    );
-                                  })()}
+                                      const badgeProps = getBadgeProps();
+                                      return (
+                                        <Badge
+                                          variant={badgeProps.variant}
+                                          className={badgeProps.className}
+                                        >
+                                          {badgeProps.text}
+                                        </Badge>
+                                      );
+                                    })()}
+                                  </div>
                                 </div>
-
                                 <div>
                                   <div className='flex items-center space-x-1 mb-1'>
                                     <div
@@ -517,14 +533,16 @@ export default function JugadorPage() {
                                     Partida #{partida.id}
                                   </div>
                                 </div>
-                                <ChevronRight className="w-5 h-5" />
+                                <ChevronRight className='w-5 h-5' />
                               </div>
                             </div>
                           </div>
                         </Link>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Click para ver detalles de la partida #{partida.id}</p>
+                        <p>
+                          Click para ver detalles de la partida #{partida.id}
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   );

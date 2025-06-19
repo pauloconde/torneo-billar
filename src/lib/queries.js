@@ -150,3 +150,41 @@ export async function obtenerPartida(id) {
     })),
   };
 }
+
+// Obtiene todos los participantes y todas las partidas
+export async function obtenerParticipantesYPartidas() {
+  // Obtener participantes
+  const { data: participantes, error: errorParticipantes } = await supabase
+    .from('participantes')
+    .select('cedula, nombre')
+    .order('nombre');
+
+  if (errorParticipantes) {
+    console.error('Error obteniendo participantes:', errorParticipantes);
+    return { participantes: [], partidas: [] };
+  }
+
+  // Obtener partidas (con datos de los jugadores para fácil acceso)
+  const { data: partidas, error: errorPartidas } = await supabase
+    .from('partidas')
+    .select(`
+      id,
+      jugador1,
+      jugador2,
+      entradas1,
+      entradas2,
+      carambolas1,
+      carambolas2,
+      seriemayor1,
+      seriemayor2,
+      jugador1_data:participantes!partidas_jugador1_fkey(cedula, nombre),
+      jugador2_data:participantes!partidas_jugador2_fkey(cedula, nombre)
+    `);
+
+  if (errorPartidas) {
+    console.error('Error obteniendo partidas:', errorPartidas);
+    return { participantes, partidas: [] };
+  }
+
+  return { participantes, partidas };
+}
