@@ -25,6 +25,36 @@ import {
   Tooltip,
 } from 'recharts';
 
+// CustomDot parametrizable
+const CustomDot = (serieKey, dotColor, starColor) => {
+  const Dot = (props) => {
+    const { cx, cy, payload } = props;
+    if (payload[serieKey]) {
+      return (
+        <Star
+          x={cx - 8}
+          y={cy - 8}
+          size={16}
+          color={'#0F172B'}
+          fill={starColor}
+        />
+      );
+    }
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={2.5}
+        fill={'#0F172B'}
+        stroke={dotColor}
+        strokeWidth={0.8}
+      />
+    );
+  };
+  Dot.displayName = `CustomDot_${serieKey}`;
+  return Dot;
+};
+
 export default function PartidaPage() {
   const params = useParams();
   const router = useRouter();
@@ -214,6 +244,9 @@ export default function PartidaPage() {
     }
   };
 
+
+
+
   return (
     <div className='min-h-screen bg-background p-4'>
       <div className='max-w-6xl mx-auto'>
@@ -396,12 +429,7 @@ export default function PartidaPage() {
                       dataKey={partida.jugador1_data.nombre}
                       stroke={colorBlanco}
                       strokeWidth={3}
-                      dot={{
-                        fill: '#aaa',
-                        strokeWidth: 1,
-                        r: 3,
-                        stroke: colorBlanco,
-                      }}
+                      dot={CustomDot('serie1', colorBlanco, '#2B7FFF')}
                       activeDot={{ r: 6, stroke: colorBlanco, strokeWidth: 2 }}
                     />
                     <Line
@@ -409,12 +437,7 @@ export default function PartidaPage() {
                       dataKey={partida.jugador2_data.nombre}
                       stroke={colorAmarillo}
                       strokeWidth={3}
-                      dot={{
-                        fill: '#C99011',
-                        strokeWidth: 1,
-                        r: 3,
-                        stroke: colorAmarillo,
-                      }}
+                      dot={CustomDot('serie2', colorAmarillo, '#2B7FFF')}
                       activeDot={{
                         r: 6,
                         stroke: colorAmarillo,
