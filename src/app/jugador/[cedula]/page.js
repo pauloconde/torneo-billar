@@ -430,8 +430,7 @@ export default function JugadorPage() {
                                 <div className='flex-col'>
                                   <div className='flex items-center space-x-1 mb-1 pl-2 text-sm text-muted-foreground'>
                                     {(
-                                      partida.carambolas2 / partida.entradas2
-                                    ).toFixed(3)}
+                                      resultado.misCarambolas / partida.entradas1).toFixed(3)}
                                   </div>
                                   <div className='flex items-center space-x-2'>
                                     {(() => {
