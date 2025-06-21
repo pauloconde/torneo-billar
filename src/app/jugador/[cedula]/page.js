@@ -202,7 +202,7 @@ export default function JugadorPage() {
       <div className='max-w-4xl mx-auto'>
         {/* Header con botón de regreso */}
         <div className='mb-6'>
-            <VolverButton fallback="/" />
+          <VolverButton fallback='/' />
         </div>
 
         {/* Estadísticas del jugador */}
@@ -368,6 +368,11 @@ export default function JugadorPage() {
                                 </div>
                               </div>
                               <div className='text-right'>
+                                <div className='flex items-center justify-end text-sm text-muted-foreground'>
+                                  {(
+                                    resultado.misCarambolas / partida.entradas1
+                                  ).toFixed(3)}
+                                </div>
                                 <div className='text-2xl font-bold text-foreground'>
                                   {resultado.misCarambolas} -{' '}
                                   {resultado.rivalCarambolas}
@@ -430,7 +435,9 @@ export default function JugadorPage() {
                                 <div className='flex-col'>
                                   <div className='flex items-center space-x-1 mb-1 pl-2 text-sm text-muted-foreground'>
                                     {(
-                                      resultado.misCarambolas / partida.entradas1).toFixed(3)}
+                                      resultado.misCarambolas /
+                                      partida.entradas1
+                                    ).toFixed(3)}
                                   </div>
                                   <div className='flex items-center space-x-2'>
                                     {(() => {
