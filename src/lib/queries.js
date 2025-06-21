@@ -188,3 +188,40 @@ export async function obtenerParticipantesYPartidas() {
 
   return { participantes, partidas };
 }
+
+export async function obtenerParticipantes() {
+  const { data, error } = await supabase
+    .from('participantes')
+    .select('*')
+    .order('nombre', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+export async function insertarPartida(partida) {
+  // partida debe ser un objeto con los campos: fecha, hora_inicio, hora_fin, jugador1, jugador2, entradas1, entradas2,
+  // carambolas1, carambolas2, seriemayor1, seriemayor2, arbitro (puedes omitir los que no uses)
+  const { data, error } = await supabase
+    .from('partidas')
+    .insert([partida])
+    .select()
+    .single();
+  if (error) throw error;
+  // Devuelve el objeto de la partida insertada (incluye el id autogenerado)
+  return data;
+}
+
+export async function insertarEntradas(partida_id, entradas) {
+  // entradas es un array de objetos: [{numero_entrada, carambolas_jugador1, carambolas_jugador2}, ...]
+  const filas = entradas.map((entrada, idx) => ({
+    partida_id,
+    numero_entrada: idx + 1,
+    carambolas_jugador1: entrada.carambolas_jugador1,
+    carambolas_jugador2: entrada.carambolas_jugador2,
+  }));
+  const { data, error } = await supabase
+    .from('entradas')
+    .insert(filas);
+  if (error) throw error;
+  return data;
+}

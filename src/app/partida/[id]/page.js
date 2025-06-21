@@ -6,6 +6,7 @@ import { obtenerPartida } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import VolverButton from '@/components/VolverButton';
 import {
   ChartContainer,
   ChartTooltip,
@@ -252,14 +253,7 @@ export default function PartidaPage() {
       <div className='max-w-6xl mx-auto'>
         {/* Header */}
         <div className='mb-6'>
-          <Button
-            variant='ghost'
-            onClick={() => router.back()}
-            className='mb-4'
-          >
-            <ArrowLeft className='w-4 h-4 mr-2' />
-            Volver
-          </Button>
+            <VolverButton fallback="/" />
         </div>
 
         {/* Información de la partida */}

@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import Link from 'next/link';
+import VolverButton from '../../../components/VolverButton';
 
 export default function JugadorPage() {
   const params = useParams();
@@ -201,14 +202,7 @@ export default function JugadorPage() {
       <div className='max-w-4xl mx-auto'>
         {/* Header con botón de regreso */}
         <div className='mb-6'>
-          <Button
-            variant='ghost'
-            onClick={() => router.push('/')}
-            className='mb-4'
-          >
-            <ArrowLeft className='w-4 h-4 mr-2' />
-            Volver al ranking
-          </Button>
+            <VolverButton fallback="/" />
         </div>
 
         {/* Estadísticas del jugador */}
