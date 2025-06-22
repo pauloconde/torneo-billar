@@ -383,7 +383,7 @@ export default function JugadorPage() {
                             {/* Series */}
                             <div className='flex justify-end items-center mb-3'>
                               <div className='text-sm text-muted-foreground'>
-                                Serie:&nbsp;
+                                Mayor serie:&nbsp;
                               </div>
                               <Badge
                                 variant='outline'
@@ -526,7 +526,7 @@ export default function JugadorPage() {
                                     {resultado.rivalCarambolas}
                                   </div>
                                   <div className='text-sm text-muted-foreground'>
-                                    Mayor Serie: {resultado.miSerie} vs{' '}
+                                    Mayor serie: {resultado.miSerie} vs{' '}
                                     {resultado.rivalSerie}
                                   </div>
                                   <div className='text-xs text-muted-foreground'>
