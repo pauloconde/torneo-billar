@@ -53,34 +53,18 @@ export default function RoundRobinPage() {
 
   const resumenJugadores = calcularPartidasPorJugador();
 
-  const calcularResumenGeneral = () => {
-    let jugadas = 0;
-    let pendientes = 0;
-    const yaContados = new Set();
-    participantes.forEach((p1, i) => {
-      participantes.forEach((p2, j) => {
-        if (i >= j) return;
-        const key = [p1.cedula, p2.cedula].sort().join("-");
-        if (yaContados.has(key)) return;
-        yaContados.add(key);
-        const partida = partidas.find(
-          (pt) =>
-            (pt.jugador1 === p1.cedula && pt.jugador2 === p2.cedula) ||
-            (pt.jugador2 === p1.cedula && pt.jugador1 === p2.cedula)
-        );
-        if (partida) {
-          const jugado = partida.carambolas1 > 0 || partida.carambolas2 > 0;
-          if (jugado) jugadas++;
-          else pendientes++;
-        } else {
-          pendientes++;
-        }
-      });
-    });
-    return { jugadas, pendientes };
-  };
+  // Nuevo resumen general basado en la base de datos real:
+  const totalJugadas = partidas.filter(
+    (p) => p.carambolas1 > 0 || p.carambolas2 > 0
+  ).length;
+  const totalTeorico =
+    (participantes.length * (participantes.length - 1)) / 2;
+  const totalPendientes = totalTeorico - totalJugadas;
 
-  const resumenGeneral = calcularResumenGeneral();
+  const resumenGeneral = {
+    jugadas: totalJugadas,
+    pendientes: totalPendientes >= 0 ? totalPendientes : 0,
+  };
 
   if (loading)
     return (

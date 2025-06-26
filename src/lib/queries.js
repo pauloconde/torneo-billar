@@ -88,7 +88,7 @@ export async function obtenerPartidasJugador(cedula) {
     `
     )
     .or(`jugador1.eq.${cedula},jugador2.eq.${cedula}`)
-    .order('id', { ascending: false });
+    .order('fecha', { ascending: false });
 
   if (error) {
     console.error('Error obteniendo partidas del jugador:', error);
@@ -223,5 +223,23 @@ export async function insertarEntradas(partida_id, entradas) {
     .from('entradas')
     .insert(filas);
   if (error) throw error;
+  return data;
+}
+
+// Obtener todas las partidas (con datos de ambos jugadores)
+export async function obtenerTodasLasPartidas() {
+  const { data, error } = await supabase
+    .from('partidas')
+    .select(`
+      *,
+      jugador1_data:participantes!partidas_jugador1_fkey(cedula, nombre),
+      jugador2_data:participantes!partidas_jugador2_fkey(cedula, nombre)
+    `)
+    .order('id', { ascending: false }); // O .order('id', { ascending: false }) si prefieres por id
+
+  if (error) {
+    console.error('Error obteniendo todas las partidas:', error);
+    return [];
+  }
   return data;
 }
