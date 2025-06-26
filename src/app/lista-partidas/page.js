@@ -18,6 +18,7 @@ export default function ListaPartidasPage() {
         // Ordenar por fecha descendente
         setPartidas(lista.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)));
       } catch (e) {
+        console.error('Error cargando partidas:', e);
         setPartidas([]);
       }
       setLoading(false);

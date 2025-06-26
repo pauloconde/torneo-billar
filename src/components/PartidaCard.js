@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import {
   Calendar,
@@ -49,49 +48,50 @@ function calcularDuracionPartida(horaInicio, horaFin) {
   }
 }
 
-function formatearNombre(nombre) {
-  const indiceComa = nombre.indexOf(',');
-  if (indiceComa !== -1) {
-    const apellidos = nombre.substring(0, indiceComa);
-    const nombres = nombre.substring(indiceComa + 1).trim();
-    return { apellidos, nombres };
-  }
-  return { apellidos: nombre, nombres: '' };
-}
+// function formatearNombre(nombre) {
+//   const indiceComa = nombre.indexOf(',');
+//   if (indiceComa !== -1) {
+//     const apellidos = nombre.substring(0, indiceComa);
+//     const nombres = nombre.substring(indiceComa + 1).trim();
+//     return { apellidos, nombres };
+//   }
+//   return { apellidos: nombre, nombres: '' };
+// }
 
-function obtenerResultado(partida, cedula) {
-  const esJugador1 = partida.jugador1 === cedula;
-  const misCarambolas = esJugador1 ? partida.carambolas1 : partida.carambolas2;
-  const rivalCarambolas = esJugador1 ? partida.carambolas2 : partida.carambolas1;
-  const misEntradas = esJugador1 ? partida.entradas1 : partida.entradas2;
-  const rivalEntradas = esJugador1 ? partida.entradas2 : partida.entradas1;
-  const miSerie = esJugador1 ? partida.seriemayor1 : partida.seriemayor2;
-  const rivalSerie = esJugador1 ? partida.seriemayor2 : partida.seriemayor1;
-  let resultado = 'empate';
-  if (misCarambolas > rivalCarambolas) resultado = 'victoria';
-  else if (misCarambolas < rivalCarambolas) resultado = 'derrota';
-  return {
-    misCarambolas,
-    rivalCarambolas,
-    misEntradas,
-    rivalEntradas,
-    miSerie,
-    rivalSerie,
-    resultado,
-    gane: resultado === 'victoria',
-    empate: resultado === 'empate',
-    miBola: esJugador1 ? 'blanca' : 'amarilla',
-    rivalBola: esJugador1 ? 'amarilla' : 'blanca',
-  };
-}
+// function obtenerResultado(partida, cedula) {
+//   const esJugador1 = partida.jugador1 === cedula;
+//   const misCarambolas = esJugador1 ? partida.carambolas1 : partida.carambolas2;
+//   const rivalCarambolas = esJugador1 ? partida.carambolas2 : partida.carambolas1;
+//   const misEntradas = esJugador1 ? partida.entradas1 : partida.entradas2;
+//   const rivalEntradas = esJugador1 ? partida.entradas2 : partida.entradas1;
+//   const miSerie = esJugador1 ? partida.seriemayor1 : partida.seriemayor2;
+//   const rivalSerie = esJugador1 ? partida.seriemayor2 : partida.seriemayor1;
+//   let resultado = 'empate';
+//   if (misCarambolas > rivalCarambolas) resultado = 'victoria';
+//   else if (misCarambolas < rivalCarambolas) resultado = 'derrota';
+//   return {
+//     misCarambolas,
+//     rivalCarambolas,
+//     misEntradas,
+//     rivalEntradas,
+//     miSerie,
+//     rivalSerie,
+//     resultado,
+//     gane: resultado === 'victoria',
+//     empate: resultado === 'empate',
+//     miBola: esJugador1 ? 'blanca' : 'amarilla',
+//     rivalBola: esJugador1 ? 'amarilla' : 'blanca',
+//   };
+// }
 
-export default function PartidaCard({ partida, jugadorActualCedula }) {
-  // Si se provee jugadorActualCedula, se calcula resultado, si no, se omite
-  let rival = null, resultado = null;
-  if (jugadorActualCedula) {
-    rival = partida.jugador1 === jugadorActualCedula ? partida.jugador2_data : partida.jugador1_data;
-    resultado = obtenerResultado(partida, jugadorActualCedula);
-  }
+export default function PartidaCard({ partida,  }) {
+//export default function PartidaCard({ partida, jugadorActualCedula }) {
+// Si se provee jugadorActualCedula, se calcula resultado, si no, se omite
+  // let rival = null, resultado = null;
+  // if (jugadorActualCedula) {
+  //   rival = partida.jugador1 === jugadorActualCedula ? partida.jugador2_data : partida.jugador1_data;
+  //   resultado = obtenerResultado(partida, jugadorActualCedula);
+  // }
 
   return (
     <Tooltip>
