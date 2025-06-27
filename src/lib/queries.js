@@ -88,7 +88,8 @@ export async function obtenerPartidasJugador(cedula) {
     `
     )
     .or(`jugador1.eq.${cedula},jugador2.eq.${cedula}`)
-    .order('fecha', { ascending: false });
+    .order('fecha', { ascending: false })
+    .order('hora_inicio', { ascending: false });
 
   if (error) {
     console.error('Error obteniendo partidas del jugador:', error);
