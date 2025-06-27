@@ -244,3 +244,19 @@ export async function obtenerTodasLasPartidas() {
   }
   return data;
 }
+
+// Función para formatear fechas de YYYY-MM-DD a DD/MM/YYYY
+export function formatearFechaBD(fechaStr) {
+  if (!fechaStr) return null;
+  
+  // Verificar si ya está formateada
+  if (fechaStr.includes('/')) return fechaStr;
+  
+  // Verificar si es formato ISO (YYYY-MM-DD)
+  if (fechaStr.includes('-')) {
+    const [year, month, day] = fechaStr.split('-');
+    return `${day}/${month}/${year}`;
+  }
+  
+  return fechaStr; // Devolver original si no coincide
+}

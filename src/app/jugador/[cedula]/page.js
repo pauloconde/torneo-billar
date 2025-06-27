@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { obtenerPartidasJugador, obtenerRanking } from '@/lib/queries';
+import { obtenerPartidasJugador, obtenerRanking, formatearFechaBD } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -93,14 +93,6 @@ export default function JugadorPage() {
       </div>
     );
   }
-
-  const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  };
 
   const formatearHora = (hora) => {
     if (!hora) return '';
@@ -400,7 +392,7 @@ export default function JugadorPage() {
                               <div className='flex-col items-center space-x-3'>
                                 <div className='flex items-center'>
                                   <Calendar className='w-3 h-3 mr-1' />
-                                  {formatearFecha(partida.fecha)}
+                                  {formatearFechaBD(partida.fecha)}
                                 </div>
                                 <div className='flex items-center'>
                                   <Clock className='w-3 h-3 mr-1' />
@@ -504,7 +496,7 @@ export default function JugadorPage() {
                                   <div className='flex items-center space-x-4 text-sm text-muted-foreground'>
                                     <span className='flex items-center'>
                                       <Calendar className='w-4 h-4 mr-1' />
-                                      {formatearFecha(partida.fecha)}
+                                      {formatearFechaBD(partida.fecha)}
                                     </span>
                                     <span className='flex items-center'>
                                       <Clock className='w-4 h-4 mr-1' />
