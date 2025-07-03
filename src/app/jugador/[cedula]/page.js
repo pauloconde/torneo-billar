@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { obtenerPartidasJugador, obtenerRanking, formatearFechaBD, obtenerNoJugados } from '@/lib/queries';
+import { obtenerPartidasJugador, obtenerRanking, formatearFechaBD } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

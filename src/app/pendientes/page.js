@@ -20,6 +20,7 @@ export default function PendientesPage() {
         setPendientes(list);
       } catch (err) {
         setPendientes([]);
+        console.error(err);
       } finally {
         setLoading(false);
       }
