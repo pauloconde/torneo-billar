@@ -260,3 +260,15 @@ export function formatearFechaBD(fechaStr) {
   
   return fechaStr; // Devolver original si no coincide
 }
+
+/**
+ * Usa la función RPC para obtener los rivales pendientes de un jugador.
+ * @param {string} cedula_jugador
+ * @returns {Promise<Array<{cedula:string, nombre:string}>>}
+ */
+export async function obtenerNoJugados(cedula_jugador) {
+  const { data, error } = await supabase.rpc('jugadores_no_jugados', { cedula_jugador });
+  if (error) throw error;
+  return data;
+}
+

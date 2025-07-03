@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { obtenerPartidasJugador, obtenerRanking, formatearFechaBD } from '@/lib/queries';
+import { obtenerPartidasJugador, obtenerRanking, formatearFechaBD, obtenerNoJugados } from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import {
   Target,
   BarChart3,
   Users,
-  ChevronRight,
+  ChevronRight
 } from 'lucide-react';
 import {
   Tooltip,
@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import VolverButton from '../../../components/VolverButton';
+import PendientesAcordeon from '@/components/PendientesAcordeon';
 
 export default function JugadorPage() {
   const params = useParams();
@@ -96,36 +97,28 @@ export default function JugadorPage() {
 
   const formatearHora = (hora) => {
     if (!hora) return '';
-
     // Convertir hora en formato HH:MM a formato 12 horas
     const [horas, minutos] = hora.split(':');
     const horaNum = parseInt(horas);
     const ampm = horaNum >= 12 ? 'PM' : 'AM';
     const hora12 = horaNum % 12 || 12; // 0 se convierte en 12
-
     return `${hora12}:${minutos} ${ampm}`;
   };
 
   const calcularDuracionPartida = (horaInicio, horaFin) => {
     if (!horaInicio || !horaFin) return null;
-
     // Convertir horas a minutos desde medianoche
     const convertirAMinutos = (hora) => {
       const [horas, minutos] = hora.split(':').map(Number);
       return horas * 60 + minutos;
     };
-
     const minutosInicio = convertirAMinutos(horaInicio);
     let minutosFin = convertirAMinutos(horaFin);
-
     // Si la hora de fin es menor que la de inicio, asumimos que cruzó medianoche
     if (minutosFin < minutosInicio) {
-      minutosFin += 24 * 60; // Agregar 24 horas en minutos
+      minutosFin += 24 * 60;
     }
-
     const duracionMinutos = minutosFin - minutosInicio;
-
-    // Formatear duración
     if (duracionMinutos < 60) {
       return `${duracionMinutos} min`;
     } else {
@@ -206,6 +199,8 @@ export default function JugadorPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Acordeón de partidas pendientes */}
+            <PendientesAcordeon cedula={cedula} />
             <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
               <div className='col-span-2 md:col-span-1 text-center p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
@@ -216,7 +211,6 @@ export default function JugadorPage() {
                 </div>
                 <p className='text-sm text-muted-foreground'>Promedio</p>
               </div>
-
               <div className='text-center p-4 bg-green-500/10 border border-green-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <BarChart3 className='w-5 h-5 text-green-500' />
@@ -226,7 +220,6 @@ export default function JugadorPage() {
                 </div>
                 <p className='text-sm text-muted-foreground'>Mejor Serie</p>
               </div>
-
               <div className='text-center p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Trophy className='w-5 h-5 text-purple-500' />
@@ -238,7 +231,6 @@ export default function JugadorPage() {
                   Total Carambolas
                 </p>
               </div>
-
               <div className='text-center p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Users className='w-5 h-5 text-orange-500' />
@@ -248,7 +240,6 @@ export default function JugadorPage() {
                 </div>
                 <p className='text-sm text-muted-foreground'>Partidas</p>
               </div>
-
               <div className='text-center p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg'>
                 <div className='flex items-center justify-center space-x-1 mb-1'>
                   <Users className='w-5 h-5 text-yellow-500' />
@@ -296,7 +287,6 @@ export default function JugadorPage() {
                                   con Bola {resultado.miBola}
                                 </span>
                               </div>
-
                               {(() => {
                                 const getBadgeProps = () => {
                                   if (resultado.empate) {
@@ -334,7 +324,6 @@ export default function JugadorPage() {
                                 );
                               })()}
                             </div>
-
                             {/* Rival y resultado - MÓVIL */}
                             <div className='flex items-center justify-between mb-3'>
                               <div className='flex items-center space-x-2'>
@@ -361,17 +350,13 @@ export default function JugadorPage() {
                               </div>
                               <div className='text-right'>
                                 <div className='flex items-center justify-end text-sm text-muted-foreground'>
-                                  {(
-                                    resultado.misCarambolas / partida.entradas1
-                                  ).toFixed(3)}
+                                  {(resultado.misCarambolas / partida.entradas1).toFixed(3)}
                                 </div>
                                 <div className='text-2xl font-bold text-foreground'>
-                                  {resultado.misCarambolas} -{' '}
-                                  {resultado.rivalCarambolas}
+                                  {resultado.misCarambolas} - {resultado.rivalCarambolas}
                                 </div>
                               </div>
                             </div>
-
                             {/* Series */}
                             <div className='flex justify-end items-center mb-3'>
                               <div className='text-sm text-muted-foreground'>
@@ -386,7 +371,6 @@ export default function JugadorPage() {
                                 </div>
                               </Badge>
                             </div>
-
                             {/* Footer con fecha, hora y partida */}
                             <div className='flex justify-between items-center text-xs text-muted-foreground'>
                               <div className='flex-col items-center space-x-3'>
@@ -419,17 +403,13 @@ export default function JugadorPage() {
                               <ChevronRight className='w-5 h-5' />
                             </div>
                           </div>
-
                           {/* Layout para desktop */}
                           <div className='hidden md:block border border-border rounded-lg p-4 hover:bg-muted/50 transition-all duration-200 cursor-pointer group hover:border-primary/50'>
                             <div className='flex items-center justify-between'>
                               <div className='flex items-center space-x-4'>
                                 <div className='flex-col'>
                                   <div className='flex items-center space-x-1 mb-1 pl-2 text-sm text-muted-foreground'>
-                                    {(
-                                      resultado.misCarambolas /
-                                      partida.entradas1
-                                    ).toFixed(3)}
+                                    {(resultado.misCarambolas / partida.entradas1).toFixed(3)}
                                   </div>
                                   <div className='flex items-center space-x-2'>
                                     {(() => {
@@ -510,16 +490,13 @@ export default function JugadorPage() {
                                   </div>
                                 </div>
                               </div>
-
                               <div className='text-right flex items-center space-x-3'>
                                 <div>
                                   <div className='text-lg font-bold text-foreground'>
-                                    {resultado.misCarambolas} -{' '}
-                                    {resultado.rivalCarambolas}
+                                    {resultado.misCarambolas} - {resultado.rivalCarambolas}
                                   </div>
                                   <div className='text-sm text-muted-foreground'>
-                                    Mayor serie: {resultado.miSerie} vs{' '}
-                                    {resultado.rivalSerie}
+                                    Mayor serie: {resultado.miSerie} vs {resultado.rivalSerie}
                                   </div>
                                   <div className='text-xs text-muted-foreground'>
                                     Partida #{partida.id}
