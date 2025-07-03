@@ -26,6 +26,9 @@ import {
   Tooltip,
 } from 'recharts';
 
+// Importa el modal de planilla
+import PlanillaModal from '@/components/PlanillaModal';
+
 // CustomDot parametrizable
 const CustomDot = (serieKey, dotColor, starColor) => {
   const Dot = (props) => {
@@ -65,6 +68,12 @@ export default function PartidaPage() {
   const [entradas, setEntradas] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Estados para el modal de la planilla
+  const [modalOpen, setModalOpen] = useState(false);
+  const [imgUrl, setImgUrl] = useState(null);
+  const [planillaLoading, setPlanillaLoading] = useState(false);
+  const [planillaError, setPlanillaError] = useState("");
+
   const colorBlanco = '#ffffff';
   const colorAmarillo = '#FBBF24';
 
@@ -85,6 +94,30 @@ export default function PartidaPage() {
       cargarDatos();
     }
   }, [partidaId]);
+
+  // Función para cargar la planilla y abrir el modal
+  const handleVerPlanilla = async () => {
+    setPlanillaLoading(true);
+    setPlanillaError("");
+    try {
+      // Llama a tu API que hace el redirect a la URL firmada
+      const response = await fetch(`/api/planilla/${partidaId}`, { redirect: "follow" });
+      if (response.ok) {
+        setImgUrl(response.url); // URL final tras el redirect
+        setModalOpen(true);
+      } else {
+        setPlanillaError("No se pudo cargar la planilla.");
+      }
+    } catch (e) {
+      setPlanillaError("No se pudo cargar la planilla.");
+    }
+    setPlanillaLoading(false);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setImgUrl(null);
+  };
 
   if (loading) {
     return (
@@ -237,9 +270,6 @@ export default function PartidaPage() {
     }
   };
 
-
-
-
   return (
     <div className='min-h-screen bg-background p-4'>
       <div className='max-w-6xl mx-auto'>
@@ -329,6 +359,16 @@ export default function PartidaPage() {
                 </div>
               </div>
             </div>
+
+            {/* Botón para mostrar la planilla */}
+            <div className="flex justify-center mt-4 mb-2">
+              <Button variant="outline" className='text-muted-foreground' onClick={handleVerPlanilla} disabled={planillaLoading}>
+                {planillaLoading ? "Cargando..." : "Ver planilla"}
+              </Button>
+            </div>
+            {planillaError && (
+              <div className="text-red-500 text-center mb-2">{planillaError}</div>
+            )}
 
             {/* Estadísticas adicionales */}
             <div className='grid grid-cols-3 md:grid-cols-3 gap-4 pt-4 border-t border-border'>
@@ -546,6 +586,8 @@ export default function PartidaPage() {
           </CardContent>
         </Card>
       </div>
+      {/* Modal de la planilla */}
+      <PlanillaModal open={modalOpen} onClose={handleCloseModal} imgUrl={imgUrl} />
     </div>
   );
 }

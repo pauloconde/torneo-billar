@@ -24,10 +24,10 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: 'No hay planilla para esta partida' }, { status: 404 });
   }
 
-  // 2. Obtener una URL firmada de Supabase Storage (válida por 2 minutos)
+  // 2. Obtener una URL firmada de Supabase Storage (válida por 5 minutos)
   const { data: urlData, error: urlError } = await supabase.storage
     .from('planillas')
-    .createSignedUrl(partida.planilla_path, 120);
+    .createSignedUrl(partida.planilla_path, 300);
 
   if (urlError || !urlData?.signedUrl) {
     return NextResponse.json({ error: 'No se pudo obtener la imagen de la planilla' }, { status: 404 });
