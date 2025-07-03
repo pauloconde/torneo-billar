@@ -110,6 +110,7 @@ export default function PartidaPage() {
       }
     } catch (e) {
       setPlanillaError("No se pudo cargar la planilla.");
+      console.error(e);
     }
     setPlanillaLoading(false);
   };
