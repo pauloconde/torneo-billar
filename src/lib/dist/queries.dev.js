@@ -13,7 +13,7 @@ exports.obtenerTodasLasPartidas = obtenerTodasLasPartidas;
 exports.formatearFechaBD = formatearFechaBD;
 exports.obtenerNoJugados = obtenerNoJugados;
 
-var _supabase = require("./supabase");
+import _supabase from "./supabase";
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
