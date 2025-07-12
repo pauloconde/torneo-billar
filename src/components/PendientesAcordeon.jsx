@@ -58,7 +58,7 @@ export default function PendientesAcordeon({ cedula }) {
           ) : (
             <ul className="list-disc ml-6 text-sm">
               {pendientes.map((p) => (
-                <li key={p.cedula}>{p.nombre}</li>
+                <li key={p.cedula}>{p.nombre_corto}</li>
               ))}
             </ul>
           )}
