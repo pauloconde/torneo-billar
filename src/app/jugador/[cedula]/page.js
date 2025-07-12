@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { obtenerPartidasJugador, obtenerRanking, formatearFechaBD } from '@/lib/queries';
+import {
+  obtenerPartidasJugador,
+  obtenerRanking,
+  formatearFechaBD,
+} from '@/lib/queries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +18,7 @@ import {
   Target,
   BarChart3,
   Users,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -166,6 +170,9 @@ export default function JugadorPage() {
     } else if (misCarambolas < rivalCarambolas) {
       resultado = 'derrota';
     }
+    if (partida.entradas1 === 0 && partida.entradas2 === 0) {
+      resultado = 'retirado';
+    }
 
     return {
       misCarambolas,
@@ -177,6 +184,7 @@ export default function JugadorPage() {
       resultado,
       gane: resultado === 'victoria',
       empate: resultado === 'empate',
+      retirado: resultado === 'retirado',
       miBola: esJugador1 ? 'blanca' : 'amarilla',
       rivalBola: esJugador1 ? 'amarilla' : 'blanca',
     };
@@ -270,22 +278,38 @@ export default function JugadorPage() {
                   return (
                     <Tooltip key={partida.id}>
                       <TooltipTrigger asChild>
-                        <Link href={`/partida/${partida.id}`} className='block'>
+                        <Link
+                          href={
+                            resultado.retirado ? '#' : `/partida/${partida.id}`
+                          }
+                          className='block'
+                          onClick={(e) =>
+                            resultado.retirado && e.preventDefault()
+                          }
+                        >
                           {/* Layout para móvil */}
                           <div className='block md:hidden border border-border rounded-lg p-4 hover:bg-muted/50 transition-all duration-200 cursor-pointer group hover:border-primary/50'>
                             {/* Header con bola y badge */}
                             <div className='flex items-center justify-between mb-3'>
                               <div className='flex items-center space-x-2'>
-                                <div
-                                  className={`w-4 h-4 rounded-full border-2 ${
-                                    resultado.miBola === 'blanca'
-                                      ? 'bg-white border-gray-400'
-                                      : 'bg-yellow-400 border-yellow-600'
-                                  }`}
-                                ></div>
-                                <span className='text-xs text-muted-foreground uppercase font-medium'>
-                                  con Bola {resultado.miBola}
-                                </span>
+                                {resultado.retirado && (
+                                  <div className='w-4 h-4 rounded-full border-2 bg-red-500 border-red-600'></div>
+                                )}
+                                {!resultado.retirado && (
+                                  <>
+                                    <div
+                                      className={`w-4 h-4 rounded-full border-2 ${
+                                        resultado.miBola === 'blanca'
+                                          ? 'bg-white border-gray-400'
+                                          : 'bg-yellow-400 border-yellow-600'
+                                      }`}
+                                    ></div>
+
+                                    <span className='text-xs text-muted-foreground uppercase font-medium'>
+                                      con Bola {resultado.miBola}
+                                    </span>
+                                  </>
+                                )}
                               </div>
                               {(() => {
                                 const getBadgeProps = () => {
@@ -295,6 +319,14 @@ export default function JugadorPage() {
                                       className:
                                         'border-muted-foreground text-muted-foreground',
                                       text: 'Empate',
+                                    };
+                                  }
+                                  if (resultado.retirado) {
+                                    return {
+                                      variant: 'outline',
+                                      className:
+                                        'border-muted-foreground text-muted-foreground',
+                                      text: 'Jugador Retirado',
                                     };
                                   }
                                   if (resultado.gane) {
@@ -328,18 +360,22 @@ export default function JugadorPage() {
                             <div className='flex items-center justify-between mb-3'>
                               <div className='flex items-center space-x-2'>
                                 <div className='flex flex-col'>
-                                  <p className='text-sm'>vs.</p>
+                                  {!resultado.retirado && (
+                                    <p className='text-sm'>vs.</p>
+                                  )}
                                   <div className='flex items-center space-x-1'>
                                     <span className='font-semibold text-foreground text-md'>
                                       {formatearNombre(rival.nombre).apellidos}
                                     </span>
-                                    <div
-                                      className={`w-3 h-3 rounded-full border ${
-                                        resultado.rivalBola === 'blanca'
-                                          ? 'bg-white border-gray-400'
-                                          : 'bg-yellow-400 border-yellow-600'
-                                      }`}
-                                    ></div>
+                                    {!resultado.retirado && (
+                                      <div
+                                        className={`w-3 h-3 rounded-full border ${
+                                          resultado.rivalBola === 'blanca'
+                                            ? 'bg-white border-gray-400'
+                                            : 'bg-yellow-400 border-yellow-600'
+                                        }`}
+                                      ></div>
+                                    )}
                                   </div>
                                   {formatearNombre(rival.nombre).nombres && (
                                     <span className='text-md text-foreground -mt-2'>
@@ -348,69 +384,87 @@ export default function JugadorPage() {
                                   )}
                                 </div>
                               </div>
-                              <div className='text-right'>
-                                <div className='flex items-center justify-end text-sm text-muted-foreground'>
-                                  {(resultado.misCarambolas / partida.entradas1).toFixed(3)}
-                                </div>
-                                <div className='text-2xl font-bold text-foreground'>
-                                  {resultado.misCarambolas} - {resultado.rivalCarambolas}
-                                </div>
-                              </div>
+                              {!resultado.retirado && (
+                                <>
+                                  <div className='text-right'>
+                                    <div className='flex items-center justify-end text-sm text-muted-foreground'>
+                                      {(
+                                        resultado.misCarambolas /
+                                        partida.entradas1
+                                      ).toFixed(3)}
+                                    </div>
+                                    <div className='text-2xl font-bold text-foreground'>
+                                      {resultado.misCarambolas} -{' '}
+                                      {resultado.rivalCarambolas}
+                                    </div>
+                                  </div>
+                                </>
+                              )}
                             </div>
                             {/* Series */}
-                            <div className='flex justify-end items-center mb-3'>
-                              <div className='text-sm text-muted-foreground'>
-                                Mayor serie:&nbsp;
+                            {!resultado.retirado && (
+                              <div className='flex justify-end items-center mb-3'>
+                                <div className='text-sm text-muted-foreground'>
+                                  Mayor serie:&nbsp;
+                                </div>
+                                <Badge
+                                  variant='outline'
+                                  className='border-border text-md'
+                                >
+                                  <div className='font-medium text-foreground'>
+                                    {resultado.miSerie} vs{' '}
+                                    {resultado.rivalSerie}
+                                  </div>
+                                </Badge>
                               </div>
-                              <Badge
-                                variant='outline'
-                                className='border-border text-md'
-                              >
-                                <div className='font-medium text-foreground'>
-                                  {resultado.miSerie} vs {resultado.rivalSerie}
-                                </div>
-                              </Badge>
-                            </div>
+                            )}
                             {/* Footer con fecha, hora y partida */}
-                            <div className='flex justify-between items-center text-xs text-muted-foreground'>
-                              <div className='flex-col items-center space-x-3'>
-                                <div className='flex items-center'>
-                                  <Calendar className='w-3 h-3 mr-1' />
-                                  {formatearFechaBD(partida.fecha)}
-                                </div>
-                                <div className='flex items-center'>
-                                  <Clock className='w-3 h-3 mr-1' />
-                                  {formatearHora(partida.hora_inicio)}
-                                  <span className='flex items-center space-x-2'>
-                                    {partida.hora_fin && (
-                                      <span>
-                                        &nbsp;(
-                                        {calcularDuracionPartida(
-                                          partida.hora_inicio,
-                                          partida.hora_fin
-                                        )}
-                                        )
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-                                <div className='flex items-center justify-between '>
-                                  <div className='text-xs text-white pt-1 border-t-2 mt-1'>
-                                    Partida #{partida.id}
+                            {!resultado.retirado && (
+                              <div className='flex justify-between items-center text-xs text-muted-foreground'>
+                                <div className='flex-col items-center space-x-3'>
+                                  <div className='flex items-center'>
+                                    <Calendar className='w-3 h-3 mr-1' />
+                                    {formatearFechaBD(partida.fecha)}
+                                  </div>
+                                  <div className='flex items-center'>
+                                    <Clock className='w-3 h-3 mr-1' />
+                                    {formatearHora(partida.hora_inicio)}
+                                    <span className='flex items-center space-x-2'>
+                                      {partida.hora_fin && (
+                                        <span>
+                                          &nbsp;(
+                                          {calcularDuracionPartida(
+                                            partida.hora_inicio,
+                                            partida.hora_fin
+                                          )}
+                                          )
+                                        </span>
+                                      )}
+                                    </span>
+                                  </div>
+                                  <div className='flex items-center justify-between '>
+                                    <div className='text-xs text-white pt-1 border-t-2 mt-1'>
+                                      Partida #{partida.id}
+                                    </div>
                                   </div>
                                 </div>
+                                <ChevronRight className='w-5 h-5' />
                               </div>
-                              <ChevronRight className='w-5 h-5' />
-                            </div>
+                            )}
                           </div>
                           {/* Layout para desktop */}
                           <div className='hidden md:block border border-border rounded-lg p-4 hover:bg-muted/50 transition-all duration-200 cursor-pointer group hover:border-primary/50'>
                             <div className='flex items-center justify-between'>
                               <div className='flex items-center space-x-4'>
                                 <div className='flex-col'>
-                                  <div className='flex items-center space-x-1 mb-1 pl-2 text-sm text-muted-foreground'>
-                                    {(resultado.misCarambolas / partida.entradas1).toFixed(3)}
-                                  </div>
+                                  {!resultado.retirado && (
+                                    <div className='flex items-center space-x-1 mb-1 pl-2 text-sm text-muted-foreground'>
+                                      {(
+                                        resultado.misCarambolas /
+                                        partida.entradas1
+                                      ).toFixed(3)}
+                                    </div>
+                                  )}
                                   <div className='flex items-center space-x-2'>
                                     {(() => {
                                       const getBadgeProps = () => {
@@ -420,6 +474,14 @@ export default function JugadorPage() {
                                             className:
                                               'border-muted-foreground text-muted-foreground',
                                             text: 'Empate',
+                                          };
+                                        }
+                                        if (resultado.retirado) {
+                                          return {
+                                            variant: 'outline',
+                                            className:
+                                              'border-muted-foreground text-muted-foreground',
+                                            text: 'Retirado',
                                           };
                                         }
                                         if (resultado.gane) {
@@ -452,67 +514,86 @@ export default function JugadorPage() {
                                 </div>
                                 <div>
                                   <div className='flex items-center space-x-1 mb-1'>
-                                    <div
-                                      className={`w-4 h-4 rounded-full border-2 ${
-                                        resultado.miBola === 'blanca'
-                                          ? 'bg-white border-gray-400'
-                                          : 'bg-yellow-400 border-yellow-600'
-                                      }`}
-                                    ></div>
-                                    <span className='text-xs text-muted-foreground uppercase'>
-                                      con Bola {resultado.miBola}
-                                    </span>
+                                    {resultado.retirado && (
+                                      <div className='w-4 h-4 rounded-full border-2 bg-red-500 border-red-600'></div>
+                                    )}
+                                    {!resultado.retirado && (
+                                      <>
+                                        <div
+                                          className={`w-4 h-4 rounded-full border-2 ${
+                                            resultado.miBola === 'blanca'
+                                              ? 'bg-white border-gray-400'
+                                              : 'bg-yellow-400 border-yellow-600'
+                                          }`}
+                                        ></div>
+                                        <span className='text-xs text-muted-foreground uppercase'>
+                                          con Bola {resultado.miBola}
+                                        </span>{' '}
+                                      </>
+                                    )}
                                   </div>
                                   <div className='font-semibold text-foreground'>
-                                    vs {rival.nombre}
-                                    <div
-                                      className={`inline-block w-3 h-3 rounded-full border ml-1 ${
-                                        resultado.rivalBola === 'blanca'
-                                          ? 'bg-white border-gray-400'
-                                          : 'bg-yellow-400 border-yellow-600'
-                                      }`}
-                                    ></div>
+                                  {!resultado.retirado && (
+                                    <span>vs. </span>
+                                  )} {rival.nombre}
+                                    {!resultado.retirado && (
+                                      <div
+                                        className={`inline-block w-3 h-3 rounded-full border ml-1 ${
+                                          resultado.rivalBola === 'blanca'
+                                            ? 'bg-white border-gray-400'
+                                            : 'bg-yellow-400 border-yellow-600'
+                                        }`}
+                                      ></div>
+                                    )}
                                   </div>
-                                  <div className='flex items-center space-x-4 text-sm text-muted-foreground'>
-                                    <span className='flex items-center'>
-                                      <Calendar className='w-4 h-4 mr-1' />
-                                      {formatearFechaBD(partida.fecha)}
-                                    </span>
-                                    <span className='flex items-center'>
-                                      <Clock className='w-4 h-4 mr-1' />
-                                      {formatearHora(partida.hora_inicio)}
-                                      {partida.hora_fin &&
-                                        ` (${calcularDuracionPartida(
-                                          partida.hora_inicio,
-                                          partida.hora_fin
-                                        )})`}
-                                    </span>
-                                  </div>
+                                  {!resultado.retirado && (
+                                    <div className='flex items-center space-x-4 text-sm text-muted-foreground'>
+                                      <span className='flex items-center'>
+                                        <Calendar className='w-4 h-4 mr-1' />
+                                        {formatearFechaBD(partida.fecha)}
+                                      </span>
+                                      <span className='flex items-center'>
+                                        <Clock className='w-4 h-4 mr-1' />
+                                        {formatearHora(partida.hora_inicio)}
+                                        {partida.hora_fin &&
+                                          ` (${calcularDuracionPartida(
+                                            partida.hora_inicio,
+                                            partida.hora_fin
+                                          )})`}
+                                      </span>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
+                              {!resultado.retirado && (
                               <div className='text-right flex items-center space-x-3'>
                                 <div>
                                   <div className='text-lg font-bold text-foreground'>
-                                    {resultado.misCarambolas} - {resultado.rivalCarambolas}
+                                    {resultado.misCarambolas} -{' '}
+                                    {resultado.rivalCarambolas}
                                   </div>
                                   <div className='text-sm text-muted-foreground'>
-                                    Mayor serie: {resultado.miSerie} vs {resultado.rivalSerie}
+                                    Mayor serie: {resultado.miSerie} vs{' '}
+                                    {resultado.rivalSerie}
                                   </div>
                                   <div className='text-xs text-muted-foreground'>
                                     Partida #{partida.id}
                                   </div>
                                 </div>
-                                <ChevronRight className='w-5 h-5' />
-                              </div>
+                                  <ChevronRight className='w-5 h-5' />
+                                </div>
+                              )}
                             </div>
                           </div>
                         </Link>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          Click para ver detalles de la partida #{partida.id}
-                        </p>
-                      </TooltipContent>
+                      {!resultado.retirado && (
+                        <TooltipContent>
+                          <p>
+                            Click para ver detalles de la partida #{partida.id}
+                          </p>
+                        </TooltipContent>
+                      )}
                     </Tooltip>
                   );
                 })}

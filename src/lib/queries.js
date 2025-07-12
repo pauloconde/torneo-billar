@@ -1,11 +1,12 @@
 import { supabase } from './supabase';
 
-// Obtener ranking de jugadores
+// Obtener ranking de jugadores (excluyendo retirados)
 export async function obtenerRanking() {
+  // Incluir campo 'retirado' en la consulta
   const { data: partidas, error } = await supabase.from('partidas').select(`
       *,
-      jugador1_data:participantes!partidas_jugador1_fkey(cedula, nombre),
-      jugador2_data:participantes!partidas_jugador2_fkey(cedula, nombre)
+      jugador1_data:participantes!partidas_jugador1_fkey(cedula, nombre, retirado),
+      jugador2_data:participantes!partidas_jugador2_fkey(cedula, nombre, retirado)
     `);
 
   if (error) {
@@ -17,48 +18,50 @@ export async function obtenerRanking() {
   const estadisticas = new Map();
 
   partidas?.forEach((partida) => {
-    // Estadísticas jugador 1
+    // Procesar jugador 1 solo si no está retirado
     const jugador1 = partida.jugador1_data;
-    if (!estadisticas.has(jugador1.cedula)) {
-      estadisticas.set(jugador1.cedula, {
-        cedula: jugador1.cedula,
-        nombre: jugador1.nombre,
-        partidas_jugadas: 0,
-        total_carambolas: 0,
-        total_entradas: 0,
-        promedio: 0,
-        mejor_serie: 0,
-      });
+    if (!jugador1.retirado) {
+      if (!estadisticas.has(jugador1.cedula)) {
+        estadisticas.set(jugador1.cedula, {
+          cedula: jugador1.cedula,
+          nombre: jugador1.nombre,
+          partidas_jugadas: 0,
+          total_carambolas: 0,
+          total_entradas: 0,
+          promedio: 0,
+          mejor_serie: 0,
+        });
+      }
+      const stats1 = estadisticas.get(jugador1.cedula);
+      stats1.partidas_jugadas++;
+      stats1.total_carambolas += partida.carambolas1;
+      stats1.total_entradas += partida.entradas1;
+      stats1.mejor_serie = Math.max(stats1.mejor_serie, partida.seriemayor1);
     }
 
-    const stats1 = estadisticas.get(jugador1.cedula);
-    stats1.partidas_jugadas++;
-    stats1.total_carambolas += partida.carambolas1;
-    stats1.total_entradas += partida.entradas1;
-    stats1.mejor_serie = Math.max(stats1.mejor_serie, partida.seriemayor1);
-
-    // Estadísticas jugador 2
+    // Procesar jugador 2 solo si no está retirado
     const jugador2 = partida.jugador2_data;
-    if (!estadisticas.has(jugador2.cedula)) {
-      estadisticas.set(jugador2.cedula, {
-        cedula: jugador2.cedula,
-        nombre: jugador2.nombre,
-        partidas_jugadas: 0,
-        total_carambolas: 0,
-        total_entradas: 0,
-        promedio: 0,
-        mejor_serie: 0,
-      });
+    if (!jugador2.retirado) {
+      if (!estadisticas.has(jugador2.cedula)) {
+        estadisticas.set(jugador2.cedula, {
+          cedula: jugador2.cedula,
+          nombre: jugador2.nombre,
+          partidas_jugadas: 0,
+          total_carambolas: 0,
+          total_entradas: 0,
+          promedio: 0,
+          mejor_serie: 0,
+        });
+      }
+      const stats2 = estadisticas.get(jugador2.cedula);
+      stats2.partidas_jugadas++;
+      stats2.total_carambolas += partida.carambolas2;
+      stats2.total_entradas += partida.entradas2;
+      stats2.mejor_serie = Math.max(stats2.mejor_serie, partida.seriemayor2);
     }
-
-    const stats2 = estadisticas.get(jugador2.cedula);
-    stats2.partidas_jugadas++;
-    stats2.total_carambolas += partida.carambolas2;
-    stats2.total_entradas += partida.entradas2;
-    stats2.mejor_serie = Math.max(stats2.mejor_serie, partida.seriemayor2);
   });
 
-  // Calcular promedios y ordenar
+  // Calcular promedios y ordenar (solo jugadores activos)
   const ranking = Array.from(estadisticas.values()).map((stats) => ({
     ...stats,
     promedio:
@@ -71,7 +74,6 @@ export async function obtenerRanking() {
   return ranking.sort((a, b) => {
     if (a.promedio !== b.promedio) return b.promedio - a.promedio;
     if (a.mejor_serie !== b.mejor_serie) return b.mejor_serie - a.mejor_serie;
-    // TODO: Implementar head-to-head cuando sea necesario
     return 0;
   });
 }
